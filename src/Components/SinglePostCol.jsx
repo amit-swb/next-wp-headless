@@ -25,6 +25,11 @@ export const SinglePostCol = ({ post }) => {
     }
   }, [controls, inView]);
 
+  // Image Loader
+  const myLoader = () => {
+    return `${post.featured_media}`;
+  };
+
   // format date/time
   function formatDate(dateStr) {
     const date = new Date(dateStr);
@@ -52,7 +57,7 @@ export const SinglePostCol = ({ post }) => {
       <Link href={`/single-details/${post.id}`} style={{ position: "absolute", width: "100%", height: "100%", left: "0", top: "0", zIndex: "1" }}></Link>
       <div className="group w-full relative p-5 bg-slate-300 cursor-pointer h-full flex flex-col">
         {post.featured_media ? (
-          <Image className="w-full bg-gray-50 rounded-xl aspect-square object-cover" src={post.featured_media} width={0} height={0} sizes="100vw" alt="Featured Media" />
+          <Image className="w-full bg-gray-50 rounded-xl aspect-square object-cover" loader={myLoader} src={post.featured_media} width={0} height={0} sizes="100vw" alt="Featured Media" />
         ) : (
           <Image className="w-full bg-gray-50 rounded-xl aspect-square object-cover" src={placeholder} width={0} height={0} sizes="100vw" alt="Placeholder" />
         )}

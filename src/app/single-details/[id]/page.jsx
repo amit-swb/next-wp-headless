@@ -14,6 +14,14 @@ export default function SingleDetails() {
   useEffect(() => {
     dispatch(singleBlogDetails(id));
   }, [dispatch, id]);
+
+  // Image Loader
+  const myLoader = (c) => {
+    return (props) => {
+      return `${c.featured_media}`;
+    };
+  };
+
   return (
     <>
       {loading ? (
@@ -34,7 +42,7 @@ export default function SingleDetails() {
               <main className="mt-10">
                 <div className="mb-4 md:mb-0 w-full max-w-screen-lg mx-auto relative" style={{ height: "24em" }}>
                   <div className="absolute left-0 bottom-0 w-full h-full z-10" style={{ backgroundImage: "linear-gradient(180deg,transparent,rgba(0,0,0,.7))" }}></div>
-                  {c.featured_media && <Image className="absolute left-0 top-0 w-full h-full object-cover" src={c.featured_media} width={0} height={0} sizes="100vw" alt={c.title} />}
+                  {c.featured_media && <Image className="absolute left-0 top-0 w-full h-full object-cover" loader={myLoader(c)} src={c.featured_media} width={0} height={0} sizes="100vw" alt={c.title} />}
                   {!c.featured_media && <Image className="absolute left-0 top-0  w-full h-full z-0 object-cover" src={placeholder} width={0} height={0} sizes="100vw" alt="Placeholder" />}
                   <div className="p-4 absolute bottom-0 left-0 z-20">
                     <a href="#" className="px-4 py-1 bg-black text-gray-200 inline-flex items-center justify-center mb-2">

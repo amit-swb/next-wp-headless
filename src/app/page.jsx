@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { SinglePostCol } from "../Components/SinglePostCol";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchPost } from "../app/lib/slices/slice";
+import { fetchPost } from "./lib/slices/postSlice";
 
 export default function Home() {
   const { posts, loading } = useSelector((state) => state.post);

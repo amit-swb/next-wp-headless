@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import placeholder from "../../../Images/placeholder.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { singleBlogDetails } from "@/lib/slices/slice";
+import { singleBlogDetails } from "@/lib/slices/postSlice";
 
 export default function SingleDetails() {
   const { singlePost, loading } = useSelector((state) => state.post);
@@ -50,7 +50,7 @@ export default function SingleDetails() {
                     </a>
                     <h2 className="text-4xl font-semibold text-gray-100 leading-tight">{c.title}</h2>
                     <div className="flex mt-3">
-                      <img src="https://randomuser.me/api/portraits/men/97.jpg" className="h-10 w-10 rounded-full mr-2 object-cover" />
+                      <Image className="h-10 w-10 rounded-full mr-2 object-cover" src={placeholder} width={0} height={0} sizes="100vw" alt="Placeholder" />
                       <div>
                         <p className="font-semibold text-gray-200 text-sm"> {c.meta.big_title} </p>
                         <p className="font-semibold text-gray-400 text-xs"> {c.meta.faq_title} </p>

@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { ThemeSwitcher } from "../app/ThemeProvider/ThemeSwitcher";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPages } from "@/lib/slices/slice";
+import { fetchPages } from "@/lib/slices/postSlice";
 
 export default function Header() {
   const { pages } = useSelector((state) => state.post);

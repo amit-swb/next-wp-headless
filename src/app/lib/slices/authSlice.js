@@ -12,7 +12,7 @@ export const AuthRegistration = createAsyncThunk(
             toast.success("Registation Successfully");
             // Delay the redirection by 1.5 seconds
             await new Promise(resolve => setTimeout(resolve, 1500));
-            router.push("/");
+            router.push("/Auth/Admin/Profile");
             return response.data;
         } catch (error) {
             return thunkAPI.rejectWithValue();
@@ -29,7 +29,7 @@ export const AuthLogin = createAsyncThunk(
             toast.success("Login Successfully");
             // Delay the redirection by 1.5 seconds
             await new Promise(resolve => setTimeout(resolve, 1500));
-            router.push("/");
+            router.push("/Auth/Admin/Profile");
             console.log(response);
             return response.data;
         } catch (error) {
@@ -71,7 +71,7 @@ const authSlice = createSlice({
             .addCase(AuthRegistration.fulfilled, (state, action) => {
                 state.loading = false;
                 state.auth = action.payload;
-                localStorage.setItem("auth", JSON.stringify({ ...action.payload }));
+                localStorage.setItem("auth", JSON.stringify(action.payload.data));
             })
             .addCase(AuthRegistration.rejected, (state, action) => {
                 state.loading = false;
@@ -83,7 +83,7 @@ const authSlice = createSlice({
             .addCase(AuthLogin.fulfilled, (state, action) => {
                 state.loading = false;
                 state.auth = action.payload;
-                localStorage.setItem("auth", JSON.stringify({ ...action.payload }));
+                localStorage.setItem("auth", JSON.stringify(action.payload.data));
             })
             .addCase(AuthLogin.rejected, (state, action) => {
                 state.loading = false;

@@ -6,10 +6,10 @@ import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { AuthLogin } from "@/lib/slices/authSlice";
 import Link from "next/link";
+import { companyLogin } from "@/lib/slices/companySlice";
 
-const AuthLoginScreen = () => {
+const CompanyLoginScreen = () => {
   const [successful, setSuccessful] = useState(false);
   const { error } = useSelector((state) => ({ ...state.auth }));
   const router = useRouter();
@@ -35,7 +35,7 @@ const AuthLoginScreen = () => {
     const { email_id, password } = formValue;
     setSuccessful(false);
 
-    dispatch(AuthLogin({ email_id, password, toast, router }))
+    dispatch(companyLogin({ email_id, password, toast, router }))
       .unwrap()
       .then(() => {
         setSuccessful(true);
@@ -50,7 +50,7 @@ const AuthLoginScreen = () => {
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">Log in</h1>
+            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">Log in(Company)</h1>
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleLogin}>
               <Form className="space-y-4 md:space-y-6">
                 {!successful && (
@@ -79,16 +79,7 @@ const AuthLoginScreen = () => {
                       <ErrorMessage name="password" component="div" className="text-red-800" />
                     </div>
                     <div className="flex items-center justify-between mt-3">
-                      <div className="flex items-start">
-                        {/* <div className="flex items-center h-5">
-                          <input id="remember" aria-describedby="remember" type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" required="" />
-                        </div>
-                        <div className="ml-3 text-sm">
-                          <label for="remember" className="text-gray-500 dark:text-gray-300">
-                            Remember me
-                          </label>
-                        </div> */}
-                      </div>
+                      <div className="flex items-start"></div>
                       <a href="#" className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">
                         Forgot password?
                       </a>
@@ -101,7 +92,7 @@ const AuthLoginScreen = () => {
                     </div>
                     <p class="text-sm mt-4 font-light text-gray-500 dark:text-gray-400">
                       Need to Create Account?
-                      <Link href="/Auth/Admin/Registration" class="font-medium text-primary-600 hover:underline dark:text-primary-500">
+                      <Link href="/Auth/Company/Registration" class="font-medium text-primary-600 hover:underline dark:text-primary-500">
                         Sign Up
                       </Link>
                     </p>
@@ -117,4 +108,4 @@ const AuthLoginScreen = () => {
   );
 };
 
-export default AuthLoginScreen;
+export default CompanyLoginScreen;

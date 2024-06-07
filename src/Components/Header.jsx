@@ -8,6 +8,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchPages } from "@/lib/slices/postSlice";
 
 export default function Header() {
+  let user = null;
+
+  const auth = localStorage.getItem("auth");
+  const company = localStorage.getItem("companyTocken");
+  if (auth) {
+    user = JSON.parse(auth);
+  } else if (company) {
+    user = JSON.parse(company);
+  }
+
   const { pages } = useSelector((state) => state.post);
   const dispatch = useDispatch();
 
@@ -36,6 +46,14 @@ export default function Header() {
                     </li>
                   );
                 })}
+                {!user && (
+                  <li className="mr-12">
+                    <Link href="/Auth/Admin/Registration" className="text-coolGray-500 hover:text-coolGray-900 font-medium">
+                      Login/SignUp
+                    </Link>
+                  </li>
+                )}
+                {user && <li className="mr-12">{user?.user?.first_name || user?.user?.company_name}</li>}
               </ul>
             </div>
           </div>
@@ -68,6 +86,13 @@ export default function Header() {
                       </li>
                     );
                   })}
+                  {!user && (
+                    <li className="mr-12">
+                      <Link href="#" className="text-coolGray-500 hover:text-coolGray-900 font-medium">
+                        Login/SignUp
+                      </Link>
+                    </li>
+                  )}
                 </ul>
               </div>
             </nav>

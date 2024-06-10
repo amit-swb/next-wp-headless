@@ -99,9 +99,9 @@ const AuthLoginScreen = () => {
                         Login
                       </button>
                     </div>
-                    <p class="text-sm mt-4 font-light text-gray-500 dark:text-gray-400">
+                    <p className="text-sm mt-4 font-light text-gray-500 dark:text-gray-400">
                       Need to Create Account?
-                      <Link href="/Auth/Admin/Registration" class="font-medium text-primary-600 hover:underline dark:text-primary-500">
+                      <Link href="/Auth/Admin/Registration" className="font-medium text-primary-600 hover:underline dark:text-primary-500">
                         Sign Up
                       </Link>
                     </p>

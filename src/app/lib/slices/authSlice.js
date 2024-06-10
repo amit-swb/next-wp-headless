@@ -30,7 +30,6 @@ export const AuthLogin = createAsyncThunk(
             // Delay the redirection by 1.5 seconds
             await new Promise(resolve => setTimeout(resolve, 1500));
             router.push("/Auth/Admin/Profile");
-            console.log(response);
             return response.data;
         } catch (error) {
             return thunkAPI.rejectWithValue();
@@ -83,7 +82,7 @@ const authSlice = createSlice({
             .addCase(AuthLogin.fulfilled, (state, action) => {
                 state.loading = false;
                 state.auth = action.payload;
-                localStorage.setItem("auth", JSON.stringify(action.payload.data));
+                localStorage.setItem("auth", JSON.stringify(action.payload.data.user));
             })
             .addCase(AuthLogin.rejected, (state, action) => {
                 state.loading = false;

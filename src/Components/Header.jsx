@@ -23,7 +23,7 @@ export default function Header() {
 
   useEffect(() => {
     dispatch(fetchPages());
-  }, [dispatch]);
+  }, [dispatch, auth, company]);
 
   return (
     <>
@@ -47,13 +47,25 @@ export default function Header() {
                   );
                 })}
                 {!user && (
-                  <li className="mr-12">
-                    <Link href="/Auth/Admin/Registration" className="text-coolGray-500 hover:text-coolGray-900 font-medium">
-                      Login/SignUp
-                    </Link>
-                  </li>
+                  <>
+                    <li className="mr-12">
+                      <Link href="/Auth/Admin/Registration" className="text-coolGray-500 hover:text-coolGray-900 font-medium">
+                        Admin Login/SignUp
+                      </Link>
+                    </li>
+                    <li className="mr-12">
+                      <Link href="/Auth/Company/Registration" className="text-coolGray-500 hover:text-coolGray-900 font-medium">
+                        Company Login/SignUp
+                      </Link>
+                    </li>
+                  </>
                 )}
-                {user && <li className="mr-12">{user?.user?.first_name || user?.user?.company_name}</li>}
+                <li className="mr-12">
+                  <Link href="/Pages/AllCompany" className="text-coolGray-500 hover:text-coolGray-900 font-medium">
+                    AllCompany
+                  </Link>
+                </li>
+                {user && <li className="mr-12">{user?.first_name || user?.company_name}</li>}
               </ul>
             </div>
           </div>
@@ -80,7 +92,7 @@ export default function Header() {
                   {pages?.map((c) => {
                     return (
                       <li className="mr-12" key={c.id}>
-                        <Link href="#" className="text-coolGray-500 hover:text-coolGray-900 font-medium">
+                        <Link href="/Auth/Admin/Registration" className="text-coolGray-500 hover:text-coolGray-900 font-medium">
                           {c.title}
                         </Link>
                       </li>
@@ -89,7 +101,7 @@ export default function Header() {
                   {!user && (
                     <li className="mr-12">
                       <Link href="#" className="text-coolGray-500 hover:text-coolGray-900 font-medium">
-                        Login/SignUp
+                        Admin Login/SignUp
                       </Link>
                     </li>
                   )}

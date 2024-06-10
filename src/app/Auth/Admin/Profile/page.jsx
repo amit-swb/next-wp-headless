@@ -7,6 +7,7 @@ export default function SingleDetails() {
   const router = useRouter();
 
   const user = JSON.parse(localStorage.getItem("auth"));
+  console.log(user);
 
   useEffect(() => {
     if (!user) {
@@ -18,11 +19,11 @@ export default function SingleDetails() {
     return null;
   }
 
-  if (!user || !user.user) {
+  if (!user) {
     return <div>No user data available</div>;
   }
 
-  const { _id, first_name, last_name, email_id, user_type } = user.user;
+  const { _id, first_name, last_name, email_id, user_type } = user;
 
   return (
     <div>

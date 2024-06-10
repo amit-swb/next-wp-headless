@@ -56,11 +56,39 @@ export const getAllCompany = createAsyncThunk(
     }
 );
 
+// Get Single Company
+export const getSingleCompany = createAsyncThunk(
+    "company/getSingleCompany",
+    async ({ id }, thunkApi) => {
+        try {
+            const response = await companyAuthService.singlecompany(id);
+            console.log(response.data.data)
+            return response.data.data;
+        } catch (error) {
+            return thunkApi.rejectWithValue(error.message);
+        }
+    }
+);
+
+// Company Update
+export const companyUpdate = createAsyncThunk(
+    "auth/company/update",
+    async ({ company_name, company_website_url, industry_business_location, company_address, country, city, zip_code, mobile_number, phone_number, contact_person, time_zone, date_format, company_number, company_tax_id, _id }, thunkAPI) => {
+        try {
+            const response = await companyAuthService.companyupdate(company_name, company_website_url, industry_business_location, company_address, country, city, zip_code, mobile_number, phone_number, contact_person, time_zone, date_format, company_number, company_tax_id, _id);
+            return response.data;
+        } catch (error) {
+            return thunkAPI.rejectWithValue();
+        }
+    }
+);
+
 
 const initialState = {
     isLoggedIn: company ? true : false,
     company: company || null,
-    allcompany: [],
+    allcompany: null,
+    singlecompany: null,
     error: "",
     loading: false,
 };
@@ -98,7 +126,7 @@ const companySlice = createSlice({
             .addCase(companyLogin.fulfilled, (state, action) => {
                 state.loading = false;
                 state.company = action.payload;
-                localStorage.setItem("companyTocken", JSON.stringify(action.payload.data));
+                localStorage.setItem("companyTocken", JSON.stringify(action.payload.data.user));
             })
             .addCase(companyLogin.rejected, (state, action) => {
                 state.loading = false;
@@ -121,8 +149,31 @@ const companySlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
+            .addCase(getSingleCompany.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(getSingleCompany.fulfilled, (state, action) => {
+                state.loading = false;
+                state.singlecompany = action.payload;
+            })
+            .addCase(getSingleCompany.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(companyUpdate.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(companyUpdate.fulfilled, (state, action) => {
+                state.loading = false;
+                state.company = action.payload;
+            })
+            .addCase(companyUpdate.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
     },
 });
+
 
 
 export default companySlice.reducer;

@@ -13,8 +13,7 @@ export const AuthRegistration = createAsyncThunk(
             // Delay the redirection by 1.5 seconds
             await new Promise(resolve => setTimeout(resolve, 1500));
             router.push("/Auth/Admin/Profile");
-            console.log("api", response)
-            return response.data;
+            return response.data.user;
         } catch (error) {
             return thunkAPI.rejectWithValue();
         }
@@ -68,10 +67,9 @@ const adminSlice = createSlice({
             })
             .addCase(AuthRegistration.fulfilled, (state, action) => {
                 state.loading = false;
-                // state.admin = action.payload;
-                state.admin = { ...state.admin, user: action.payload };
+                state.admin = { data: { user: action.payload } };  // Ensure direct assignment
                 state.isLoggedIn = true;
-                localStorage.setItem("admin", JSON.stringify(action.payload));
+                localStorage.setItem("admin", JSON.stringify(state.admin));
             })
             .addCase(AuthRegistration.rejected, (state, action) => {
                 state.loading = false;

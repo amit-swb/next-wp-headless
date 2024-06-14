@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import companyAuthService from "../services/companyAuthService";
 
-const company = JSON.parse(localStorage.getItem("company"));
+// Get the company token from localStorage if it exists and parse it
+const company = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('companyToken')) : null;
 
 // Company Auth Registration
 export const CompanySignup = createAsyncThunk(
@@ -9,13 +10,12 @@ export const CompanySignup = createAsyncThunk(
     async ({ company_name, email_id, password, toast, router }, thunkAPI) => {
         try {
             const response = await companyAuthService.authregister(company_name, email_id, password);
-            toast.success("Company Registation Successfully");
-            // Delay the redirection by 1.5 seconds
+            toast.success("Company Registration Successfully");
             await new Promise(resolve => setTimeout(resolve, 1500));
             router.push("/Auth/Company/Profile");
-            return response.data;
+            return response.data.data;
         } catch (error) {
-            return thunkAPI.rejectWithValue();
+            return thunkAPI.rejectWithValue(error.message);
         }
     }
 );
@@ -27,13 +27,11 @@ export const companyLogin = createAsyncThunk(
         try {
             const response = await companyAuthService.authlogin(email_id, password);
             toast.success("Company Login Successfully");
-            // Delay the redirection by 1.5 seconds
             await new Promise(resolve => setTimeout(resolve, 1500));
             router.push("/Auth/Company/Profile");
-            console.log(response);
-            return response.data;
+            return response.data.data;
         } catch (error) {
-            return thunkAPI.rejectWithValue();
+            return thunkAPI.rejectWithValue(error.message);
         }
     }
 );
@@ -62,7 +60,6 @@ export const getSingleCompany = createAsyncThunk(
     async ({ id }, thunkApi) => {
         try {
             const response = await companyAuthService.singlecompany(id);
-            console.log(response.data.data)
             return response.data.data;
         } catch (error) {
             return thunkApi.rejectWithValue(error.message);
@@ -76,23 +73,21 @@ export const companyUpdate = createAsyncThunk(
     async ({ company_name, company_website_url, industry_business_location, company_address, country, city, zip_code, mobile_number, phone_number, contact_person, time_zone, date_format, company_number, company_tax_id, _id }, thunkAPI) => {
         try {
             const response = await companyAuthService.companyupdate(company_name, company_website_url, industry_business_location, company_address, country, city, zip_code, mobile_number, phone_number, contact_person, time_zone, date_format, company_number, company_tax_id, _id);
-            return response.data;
+            return response.data.data;
         } catch (error) {
-            return thunkAPI.rejectWithValue();
+            return thunkAPI.rejectWithValue(error.message);
         }
     }
 );
 
-
 const initialState = {
-    isLoggedIn: company ? true : false,
+    isLoggedIn: !!company,
     company: company || null,
     allcompany: null,
     singlecompany: null,
     error: "",
     loading: false,
 };
-
 
 const companySlice = createSlice({
     name: "company",
@@ -102,8 +97,9 @@ const companySlice = createSlice({
             state.company = action.payload;
         },
         setLogout: (state) => {
-            localStorage.clear();
+            localStorage.removeItem("companyToken");
             state.company = null;
+            state.isLoggedIn = false;
         },
     },
     extraReducers: (builder) => {
@@ -113,8 +109,10 @@ const companySlice = createSlice({
             })
             .addCase(CompanySignup.fulfilled, (state, action) => {
                 state.loading = false;
-                state.company = action.payload;
-                localStorage.setItem("companyTocken", JSON.stringify(action.payload.data));
+                // state.company = action.payload;
+                state.company = { ...state.company, user: action.payload };
+                state.isLoggedIn = true;
+                localStorage.setItem("companyToken", JSON.stringify(action.payload));
             })
             .addCase(CompanySignup.rejected, (state, action) => {
                 state.loading = false;
@@ -126,15 +124,16 @@ const companySlice = createSlice({
             .addCase(companyLogin.fulfilled, (state, action) => {
                 state.loading = false;
                 state.company = action.payload;
-                localStorage.setItem("companyTocken", JSON.stringify(action.payload.data.user));
+                state.isLoggedIn = true;
+                localStorage.setItem("companyToken", JSON.stringify(action.payload));
             })
             .addCase(companyLogin.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
-            .addCase(companyLogout.fulfilled, (state, action) => {
+            .addCase(companyLogout.fulfilled, (state) => {
                 state.loading = false;
-                localStorage.removeItem("companyTocken");
+                localStorage.removeItem("companyToken");
                 state.company = null;
                 state.isLoggedIn = false;
             })
@@ -164,16 +163,17 @@ const companySlice = createSlice({
                 state.loading = true;
             })
             .addCase(companyUpdate.fulfilled, (state, action) => {
-                state.loading = false;
-                state.company = action.payload;
+                state.company.loading = false;
+                state.company.user = action.payload;
+                localStorage.setItem("companyToken", JSON.stringify(action.payload));
             })
             .addCase(companyUpdate.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
-            })
+            });
     },
 });
 
-
+export const { setUser, setLogout } = companySlice.actions;
 
 export default companySlice.reducer;

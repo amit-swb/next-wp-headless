@@ -40,9 +40,7 @@ const SingleCompany = () => {
                   </span>
                   <span className="text-sm">{formatDate(singlecompany.created_at)}</span>
                 </div>
-                <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  <Link href={`/company/${singlecompany._id}`}>{singlecompany.company_name}</Link>
-                </h2>
+                <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{singlecompany.company_name} </h2>
                 <p className="mb-5 font-light text-gray-500 dark:text-gray-400">company_address : {singlecompany.company_address}</p>
                 <p className="mb-5 font-light text-gray-500 dark:text-gray-400">city :{singlecompany.city}</p>
                 <p className="mb-5 font-light text-gray-500 dark:text-gray-400">company_number : {singlecompany.company_number}</p>

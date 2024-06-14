@@ -7,11 +7,18 @@ import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import Link from "next/link";
 import { CompanySignup } from "@/lib/slices/companySlice";
+import { selectAdminData } from "@/lib/selector/selector";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const CompanyRegistration = () => {
   const [successful, setSuccessful] = useState(false);
+  const [show, setShow] = useState(true);
+  const [password, setpassword] = useState("password");
 
-  const { error } = useSelector((state) => ({ ...state.auth }));
+  // const { error } = useSelector((state) => ({ ...state.auth }));
+  const { error } = useSelector(selectAdminData);
+
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -49,6 +56,16 @@ const CompanyRegistration = () => {
       });
   };
 
+  const passwordVisible = () => {
+    if (password == "password") {
+      setpassword("text");
+      setShow(false);
+    } else {
+      setpassword("password");
+      setShow(true);
+    }
+  };
+
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
@@ -83,15 +100,16 @@ const CompanyRegistration = () => {
                       <ErrorMessage name="email_id" component="div" className="text-red-800" />
                     </div>
 
-                    <div className="form-group mt-3">
+                    <div className="form-group mt-3 relative">
                       <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                         password
                       </label>
                       <Field
                         name="password"
-                        type="password"
+                        type={password}
                         className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       />
+                      <FontAwesomeIcon icon={show ? faEyeSlash : faEye} onClick={passwordVisible} className="absolute cursor-pointer" style={{ width: "20px", top: "41px", right: "10px" }} />
                       <ErrorMessage name="password" component="div" className="text-red-800" />
                     </div>
 
@@ -100,9 +118,9 @@ const CompanyRegistration = () => {
                         Sign Up
                       </button>
                     </div>
-                    <p class="text-sm mt-4 font-light text-gray-500 dark:text-gray-400">
+                    <p className="text-sm mt-4 font-light text-gray-500 dark:text-gray-400">
                       Already have an account?
-                      <Link href="/Auth/Company/LogIn" class="font-medium text-primary-600 hover:underline dark:text-primary-500">
+                      <Link href="/Auth/Company/LogIn" className="font-medium text-primary-600 hover:underline dark:text-primary-500">
                         Login here
                       </Link>
                     </p>

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authService from "../services/authServices";
 
-const user = JSON.parse(localStorage.getItem("auth"));
+const admin = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('admin')) : null
 
 // Auth Registration
 export const AuthRegistration = createAsyncThunk(
@@ -9,10 +9,11 @@ export const AuthRegistration = createAsyncThunk(
     async ({ first_name, last_name, email_id, phone_number, password, toast, router }, thunkAPI) => {
         try {
             const response = await authService.authregister(first_name, last_name, email_id, phone_number, password);
-            toast.success("Registation Successfully");
+            toast.success("Registration Successfully");
             // Delay the redirection by 1.5 seconds
             await new Promise(resolve => setTimeout(resolve, 1500));
             router.push("/Auth/Admin/Profile");
+            console.log("api", response)
             return response.data;
         } catch (error) {
             return thunkAPI.rejectWithValue();
@@ -41,25 +42,23 @@ export const authLogout = createAsyncThunk("auth/logout", async () => {
     await authService.authlogout();
 });
 
-
 const initialState = {
-    isLoggedIn: user ? true : false,
-    user: user ? user : null,
+    isLoggedIn: !!admin,
+    admin: admin || null,
     error: "",
     loading: false,
 };
 
-
-const authSlice = createSlice({
-    name: "auth",
+const adminSlice = createSlice({
+    name: "admin",
     initialState,
     reducers: {
         setUser: (state, action) => {
-            state.user = action.payload;
+            state.admin = action.payload;
         },
         setLogout: (state) => {
-            localStorage.clear();
-            state.user = null;
+            localStorage.removeItem("admin");
+            state.admin = null;
         },
     },
     extraReducers: (builder) => {
@@ -69,8 +68,10 @@ const authSlice = createSlice({
             })
             .addCase(AuthRegistration.fulfilled, (state, action) => {
                 state.loading = false;
-                state.auth = action.payload;
-                localStorage.setItem("auth", JSON.stringify(action.payload.data));
+                // state.admin = action.payload;
+                state.admin = { ...state.admin, user: action.payload };
+                state.isLoggedIn = true;
+                localStorage.setItem("admin", JSON.stringify(action.payload));
             })
             .addCase(AuthRegistration.rejected, (state, action) => {
                 state.loading = false;
@@ -81,19 +82,23 @@ const authSlice = createSlice({
             })
             .addCase(AuthLogin.fulfilled, (state, action) => {
                 state.loading = false;
-                state.auth = action.payload;
-                localStorage.setItem("auth", JSON.stringify(action.payload.data.user));
+                state.admin = action.payload;
+                state.isLoggedIn = true;
+                localStorage.setItem("admin", JSON.stringify(action.payload));
             })
             .addCase(AuthLogin.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
-            .addCase(authLogout.fulfilled, (state, action) => {
+            .addCase(authLogout.fulfilled, (state) => {
                 state.loading = false;
-                localStorage.removeItem("auth");
-            })
+                localStorage.removeItem("admin");
+                state.admin = null;
+                state.isLoggedIn = false;
+            });
     },
 });
 
+export const { setUser, setLogout } = adminSlice.actions;
 
-export default authSlice.reducer;
+export default adminSlice.reducer;

@@ -6,37 +6,34 @@ import { ThemeSwitcher } from "../app/ThemeProvider/ThemeSwitcher";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPages } from "@/lib/slices/postSlice";
+import { selectCompanyOrAdminData } from "@/lib/selector/selector";
 
 export default function Header() {
-  let user = null;
-
-  const auth = localStorage.getItem("auth");
-  const company = localStorage.getItem("companyTocken");
-  if (auth) {
-    user = JSON.parse(auth);
-  } else if (company) {
-    user = JSON.parse(company);
-  }
-
   const { pages } = useSelector((state) => state.post);
   const dispatch = useDispatch();
 
+  const authdata = useSelector(selectCompanyOrAdminData);
+  const auth = authdata?.company || authdata?.admin?.data?.user;
+  const authName = authdata?.company?.user?.company_name || authdata?.admin?.data?.user?.first_name;
+
   useEffect(() => {
     dispatch(fetchPages());
-  }, [dispatch, auth, company]);
+  }, [dispatch]);
+
+  useEffect(() => {}, [auth]);
 
   return (
     <>
-      <header>
+      <header className="bg-gray-50 dark:bg-black">
         <nav className="flex justify-between p-6 px-4">
           <div className="flex justify-between items-center w-full">
-            <div className="xl:w-1/3">
+            <div className="xl:w-1/5">
               <Link className="block max-w-max" href="#">
-                <Image className="logo" src={logo} width={150} height={150} alt="brand logo" />
+                <Image className="logo" width={100} src={logo} priority alt="brand logo" />
               </Link>
             </div>
-            <div className="hidden xl:block xl:w-1/3">
-              <ul className="flex justify-center">
+            <div className="hidden xl:block xl:w-4/5">
+              <ul className="flex justify-end">
                 {pages?.map((c) => {
                   return (
                     <li className="mr-12" key={c.id}>
@@ -46,7 +43,7 @@ export default function Header() {
                     </li>
                   );
                 })}
-                {!user && (
+                {!auth && (
                   <>
                     <li className="mr-12">
                       <Link href="/Auth/Admin/Registration" className="text-coolGray-500 hover:text-coolGray-900 font-medium">
@@ -65,7 +62,13 @@ export default function Header() {
                     AllCompany
                   </Link>
                 </li>
-                {user && <li className="mr-12">{user?.first_name || user?.company_name}</li>}
+                {auth && (
+                  <li className="mr-12">
+                    <Link href="/Auth/Company/Profile" className="text-coolGray-500 hover:text-coolGray-900 font-medium">
+                      {authName}
+                    </Link>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -98,13 +101,13 @@ export default function Header() {
                       </li>
                     );
                   })}
-                  {!user && (
+                  {/* {!user && (
                     <li className="mr-12">
                       <Link href="#" className="text-coolGray-500 hover:text-coolGray-900 font-medium">
                         Admin Login/SignUp
                       </Link>
                     </li>
-                  )}
+                  )} */}
                 </ul>
               </div>
             </nav>

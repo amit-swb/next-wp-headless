@@ -1,11 +1,12 @@
-import { Inter } from "next/font/google";
 import "../styles/globals.css";
-import Header from "../Components/Header";
+// import Header from "../Components/Header";
 import { ThemeProviders } from "./ThemeProvider/ThemeProviders";
 import PageTransitionWrapper from "../Components/PageTransitionWrapper";
 import { ReduxProvider } from "./lib/store/redux-provider";
+import dynamic from "next/dynamic";
+import ".././Components/fontawesome";
 
-const inter = Inter({ subsets: ["latin"] });
+const Header = dynamic(() => import(".././Components/Header"), { ssr: false });
 
 export const metadata = {
   title: "Next-Headless",
@@ -15,7 +16,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
-      <body className={inter.className}>
+      <body className="bg-gray-50 dark:bg-gray-900">
         <ReduxProvider>
           <ThemeProviders>
             <Header />

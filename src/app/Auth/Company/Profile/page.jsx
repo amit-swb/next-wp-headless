@@ -9,6 +9,9 @@ import * as Yup from "yup";
 import PrivateRoute from "../../../../Components/PrivateRoute/PrivateRoute";
 import { selectCompanyData } from "@/lib/selector/selector";
 
+const URL = /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
+var phoneRegEx = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
+
 export default function SingleDetails() {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -44,6 +47,48 @@ export default function SingleDetails() {
     company_name: Yup.string()
       .test("len", "The company name must be between 3 and 40 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 40)
       .required("This field is required!"),
+
+    company_website_url: Yup.string().matches(URL, "Website URL is not valid").required("This field is required!"),
+
+    industry_business_location: Yup.string()
+      .test("len", "The industry business location must be between 3 and 100 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 100)
+      .required("This field is required!"),
+
+    company_address: Yup.string()
+      .test("len", "The company address must be between 5 and 100 characters.", (val) => val && val.toString().length >= 5 && val.toString().length <= 100)
+      .required("This field is required!"),
+
+    country: Yup.string()
+      .test("len", "The country name must be between 2 and 56 characters.", (val) => val && val.toString().length >= 2 && val.toString().length <= 56)
+      .required("This field is required!"),
+
+    city: Yup.string()
+      .test("len", "The city name must be between 2 and 85 characters.", (val) => val && val.toString().length >= 2 && val.toString().length <= 85)
+      .required("This field is required!"),
+
+    zip_code: Yup.string()
+      .matches(/^\d{5}(?:[-\s]\d{4})?$/, "Must be a valid ZIP code")
+      .required("This field is required!"),
+
+    mobile_number: Yup.string().matches(phoneRegEx, "Must be a valid mobile number").required("This field is required!"),
+
+    phone_number: Yup.string().matches(phoneRegEx, "Must be a valid phone number").required("This field is required!"),
+
+    contact_person: Yup.string()
+      .test("len", "The contact person name must be between 3 and 50 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 50)
+      .required("This field is required!"),
+
+    time_zone: Yup.string().required("This field is required!"),
+
+    date_format: Yup.date("Must be a valid date format").required("Date format is required"),
+
+    company_number: Yup.string()
+      .matches(/^[a-zA-Z0-9-]{1,30}$/, "Must be a valid company number")
+      .required("This field is required!"),
+
+    company_tax_id: Yup.string()
+      .matches(/^[a-zA-Z0-9-]{1,30}$/, "Must be a valid company tax ID")
+      .required("This field is required!"),
   });
 
   const handleUpdate = (formValue) => {
@@ -71,6 +116,7 @@ export default function SingleDetails() {
   // Logout from dashboard
   const handleLogOut = () => {
     dispatch(setLogout());
+    toast.success("Company logout successfully");
     router.push("/Auth/Company/LogIn");
   };
 

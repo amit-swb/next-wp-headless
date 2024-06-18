@@ -10,7 +10,7 @@ const admin =
 export const AuthRegistration = createAsyncThunk(
   "auth/register",
   async (
-    { first_name, last_name, email_id, phone_number, password, toast, router },
+    { first_name, last_name, email_id, phone_number, password, router },
     thunkAPI
   ) => {
     try {
@@ -21,7 +21,6 @@ export const AuthRegistration = createAsyncThunk(
         phone_number,
         password
       );
-      toast.success("Registration Successfully");
       // Delay the redirection by 1.5 seconds
       await new Promise((resolve) => setTimeout(resolve, 1500));
       router.push("/Auth/Admin/Profile");
@@ -35,10 +34,9 @@ export const AuthRegistration = createAsyncThunk(
 // Auth Login
 export const AuthLogin = createAsyncThunk(
   "auth/login",
-  async ({ email_id, password, toast, router }, thunkAPI) => {
+  async ({ email_id, password, router }, thunkAPI) => {
     try {
       const response = await authService.authlogin(email_id, password);
-      toast.success("Login Successfully");
       // Delay the redirection by 1.5 seconds
       await new Promise((resolve) => setTimeout(resolve, 1500));
       router.push("/Auth/Admin/Profile");

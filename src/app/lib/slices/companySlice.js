@@ -7,10 +7,9 @@ const company = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem(
 // Company Auth Registration
 export const CompanySignup = createAsyncThunk(
     "auth/company/register",
-    async ({ company_name, email_id, password, toast, router }, thunkAPI) => {
+    async ({ company_name, email_id, password, router }, thunkAPI) => {
         try {
             const response = await companyAuthService.authregister(company_name, email_id, password);
-            toast.success("Company Registration Successfully");
             await new Promise(resolve => setTimeout(resolve, 1500));
             router.push("/Auth/Company/Profile");
             return response.data.data;
@@ -23,10 +22,9 @@ export const CompanySignup = createAsyncThunk(
 // Company Auth Login
 export const companyLogin = createAsyncThunk(
     "auth/company/login",
-    async ({ email_id, password, toast, router }, thunkAPI) => {
+    async ({ email_id, password, router }, thunkAPI) => {
         try {
             const response = await companyAuthService.authlogin(email_id, password);
-            toast.success("Company Login Successfully");
             await new Promise(resolve => setTimeout(resolve, 1500));
             router.push("/Auth/Company/Profile");
             return response.data.data;
@@ -82,7 +80,7 @@ export const companyUpdate = createAsyncThunk(
 
 const initialState = {
     isLoggedIn: !!company,
-    company: company || null,
+    company: company || { user: null },
     allcompany: null,
     singlecompany: null,
     error: "",
@@ -94,11 +92,11 @@ const companySlice = createSlice({
     initialState,
     reducers: {
         setUser: (state, action) => {
-            state.company = action.payload;
+            state.company.user = action.payload;
         },
         setLogout: (state) => {
             localStorage.removeItem("companyToken");
-            state.company = null;
+            state.company = { user: null };
             state.isLoggedIn = false;
         },
     },
@@ -109,10 +107,9 @@ const companySlice = createSlice({
             })
             .addCase(CompanySignup.fulfilled, (state, action) => {
                 state.loading = false;
-                // state.company = action.payload;
-                state.company = { ...state.company, user: action.payload };
+                state.company.user = action.payload;
                 state.isLoggedIn = true;
-                localStorage.setItem("companyToken", JSON.stringify(action.payload));
+                localStorage.setItem("companyToken", JSON.stringify({ user: action.payload }));
             })
             .addCase(CompanySignup.rejected, (state, action) => {
                 state.loading = false;
@@ -165,7 +162,7 @@ const companySlice = createSlice({
             .addCase(companyUpdate.fulfilled, (state, action) => {
                 state.company.loading = false;
                 state.company.user = action.payload;
-                localStorage.setItem("companyToken", JSON.stringify(action.payload));
+                localStorage.setItem("companyToken", JSON.stringify({ user: action.payload }));
             })
             .addCase(companyUpdate.rejected, (state, action) => {
                 state.loading = false;

@@ -2,17 +2,18 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import PrivateRoute from "../../../../Components/PrivateRoute/PrivateRoute";
-import { selectAdminData } from "@/lib/selector/selector";
+import { selectEmployeeData } from "@/lib/selector/selector";
 import { useDispatch, useSelector } from "react-redux";
 import { setLogout } from "@/lib/slices/adminSlice";
 import { ToastContainer, toast } from "react-toastify";
 
-export default function AdminProfile() {
+export default function EmployeeProfile() {
   const dispatch = useDispatch();
   const router = useRouter();
-  const authState = useSelector(selectAdminData);
-  const auth = authState?.admin;
-  const authData = auth?.data?.user;
+  const employeeState = useSelector(selectEmployeeData);
+  console.log(employeeState);
+  const auth = employeeState?.employee;
+  const authData = auth?.user;
 
   const [isMounted, setIsMounted] = useState(false);
 
@@ -26,7 +27,7 @@ export default function AdminProfile() {
   // Logout from dashboard
   const handleLogOut = () => {
     dispatch(setLogout());
-    toast.success("Admin Logout successfully");
+    toast.success("Employee Logout successfully");
     router.push("/Auth/Admin/LogIn");
   };
 

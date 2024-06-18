@@ -47,9 +47,11 @@ const CompanyLoginScreen = () => {
       .unwrap()
       .then(() => {
         setSuccessful(true);
+        toast.success("Company Login successfully");
       })
       .catch(() => {
         setSuccessful(false);
+        toast.error("Company Login failed");
       });
   };
 

@@ -2,8 +2,9 @@ import { createSelector } from 'reselect';
 
 const selectAdminState = (state) => state.admin;
 const selectCompanyState = (state) => state.company;
+const selectEmployeeState = (state) => state.employee;
 
-// electors for admin state
+// selectors for admin state
 export const selectAdminData = createSelector(
     [selectAdminState],
     (admin) => ({
@@ -11,6 +12,17 @@ export const selectAdminData = createSelector(
         isLoggedIn: admin.isLoggedIn,
         loading: admin.loading,
         admin: admin.admin,
+    })
+);
+// selectors for employee state
+export const selectEmployeeData = createSelector(
+    [selectEmployeeState],
+    (employee) => ({
+        error: employee.error,
+        isLoggedIn: employee.isLoggedIn,
+        loading: employee.loading,
+        employee: employee.employee,
+        allemployeesbyID: employee.allemployeesbyID,
     })
 );
 
@@ -38,10 +50,9 @@ export const selectCompanyLoading = createSelector(
 export const selectCompanyOrAdminData = createSelector(
     [selectCompanyData, selectAdminData],
     (companyData, adminData) => {
-        if (companyData && companyData.company) {
+        if (companyData && companyData.company.user) {
             return companyData;
         } else if (adminData && adminData.admin) {
-            console.log("adminData",adminData)
             return adminData;
         }
         return null; // Return null if neither companyData nor adminData is valid

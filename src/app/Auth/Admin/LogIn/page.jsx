@@ -46,9 +46,11 @@ const AuthLoginScreen = () => {
       .unwrap()
       .then(() => {
         setSuccessful(true);
+        toast.success("Admin Login successfully");
       })
       .catch(() => {
         setSuccessful(false);
+        toast.error("Admin Login Failed");
       });
   };
 

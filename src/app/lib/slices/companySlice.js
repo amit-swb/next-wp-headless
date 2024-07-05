@@ -11,7 +11,7 @@ export const CompanySignup = createAsyncThunk(
         try {
             const response = await companyAuthService.authregister(company_name, email_id, password);
             await new Promise(resolve => setTimeout(resolve, 1500));
-            router.push("/Auth/Company/Profile");
+            router.push("/Auth/Company/Dashboard");
             return response.data.data;
         } catch (error) {
             return thunkAPI.rejectWithValue(error.message);
@@ -26,7 +26,7 @@ export const companyLogin = createAsyncThunk(
         try {
             const response = await companyAuthService.authlogin(email_id, password);
             await new Promise(resolve => setTimeout(resolve, 1500));
-            router.push("/Auth/Company/Profile");
+            router.push("/Auth/Company/Dashboard");
             return response.data.data;
         } catch (error) {
             return thunkAPI.rejectWithValue(error.message);

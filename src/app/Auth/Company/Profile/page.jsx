@@ -1,5 +1,7 @@
 "use client";
 import { companyUpdate, setLogout } from "@/lib/slices/companySlice";
+import { setLogout as companySetLogout } from "@/lib/slices/companySlice";
+import { setLogout as employeeSetLogout } from "@/lib/slices/employeeSlice";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -17,6 +19,7 @@ export default function SingleDetails() {
   const router = useRouter();
   const companydata = useSelector(selectCompanyData);
   const company = companydata?.company?.user;
+  console.log("company", company);
 
   useEffect(() => {
     if (!company) {
@@ -115,7 +118,9 @@ export default function SingleDetails() {
 
   // Logout from dashboard
   const handleLogOut = () => {
-    dispatch(setLogout());
+    // dispatch(setLogout());
+    dispatch(companySetLogout());
+    dispatch(employeeSetLogout());
     toast.success("Company logout successfully");
     router.push("/Auth/Company/LogIn");
   };

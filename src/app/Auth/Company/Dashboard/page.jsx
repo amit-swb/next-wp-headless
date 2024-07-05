@@ -24,7 +24,9 @@ export default function CompanyDashboard() {
   const companydata = useSelector(selectCompanyData);
   const employeedata = useSelector(selectEmployeeData);
   const company = companydata?.company?.user;
+  console.log("company", company);
   const allemployeesbyID = employeedata?.allemployeesbyID;
+  console.log("allemployeesbyID", allemployeesbyID);
 
   const companyID = company?.company_id;
 
@@ -108,7 +110,6 @@ export default function CompanyDashboard() {
   const handleRegister = (formValue, { resetForm }) => {
     const { first_Name, last_name, middle_Name, date_of_birth, email_id, password, mobile_number, alternate_number, father_number, mother_number, current_address, permanent_address, designation, date_of_joining, company_id } = formValue;
     setSuccessful(false);
-    console.log("Form values:", formValue);
 
     dispatch(
       EmployeeSignup({

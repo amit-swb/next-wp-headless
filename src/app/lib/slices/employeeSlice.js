@@ -115,6 +115,7 @@ const employeeSlice = createSlice({
         setLogout: (state) => {
             // localStorage.removeItem("employeeToken");
             state.employee = { user: null };
+            state.allemployeesbyID = { user: null };
             state.isLoggedIn = false;
         },
     },

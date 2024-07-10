@@ -5,6 +5,7 @@ import PageTransitionWrapper from "../Components/PageTransitionWrapper";
 import { ReduxProvider } from "./lib/store/redux-provider";
 import dynamic from "next/dynamic";
 import ".././Components/fontawesome";
+import Breadcrumb from "../Components/BreadCrumb/Breadcrumb";
 
 const Header = dynamic(() => import(".././Components/Header"), { ssr: false });
 
@@ -20,6 +21,7 @@ export default function RootLayout({ children }) {
         <ReduxProvider>
           <ThemeProviders>
             <Header />
+            <Breadcrumb />
             <PageTransitionWrapper>{children}</PageTransitionWrapper>
           </ThemeProviders>
         </ReduxProvider>

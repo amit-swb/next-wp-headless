@@ -17,7 +17,7 @@ export default function CompanyDashboard() {
   const [successful, setSuccessful] = useState(false);
   const [password, setpassword] = useState("password");
   const [isUpdate, setIsUpdate] = useState(false);
-  const [currentEmployee, setCurrentEmployee] = useState(null);
+  const [currentEmployee, setCurrentEmployee] = useState("");
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -25,7 +25,6 @@ export default function CompanyDashboard() {
   const employeedata = useSelector(selectEmployeeData);
   const company = companydata?.company?.user;
   const allemployeesbyID = employeedata?.allemployeesbyID;
-  console.log(allemployeesbyID);
 
   const companyID = company?.company_id;
 
@@ -66,88 +65,18 @@ export default function CompanyDashboard() {
     permanent_address: "",
     designation: "",
     date_of_joining: "",
-    pancard: "",
-    ID_number: "",
-    bank_name: "",
-    bank_account: "",
-    number_bank: "",
-    IFSC_code: "",
-    upload_Document: "",
-    employee_image: "",
   });
 
   const validationSchemaAdd = Yup.object().shape({
     first_Name: Yup.string()
       .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
       .required("This field is required!"),
-    last_name: Yup.string()
-      .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
-      .required("This field is required!"),
-    middle_Name: Yup.string()
-      .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
-      .required("This field is required!"),
-    date_of_birth: Yup.date()
-      .max(new Date(Date.now() - 567648000000), "You must be at least 18 years")
-      .required("Required"),
-    email_id: Yup.string().email("This is not a valid email_id.").required("This field is required!"),
-    password: Yup.string()
-      .test("len", "must be between 6 and 40 characters.", (val) => val && val.toString().length >= 6 && val.toString().length <= 40)
-      .required("This field is required!"),
-    mobile_number: Yup.string().matches(telRegEx, "Mobile Number is not valid").required("This field is required!"),
-    alternate_number: Yup.string().matches(telRegEx, "Alternate Number is not valid").required("This field is required!"),
-    father_number: Yup.string().matches(telRegEx, "father Number is not valid").required("This field is required!"),
-    mother_number: Yup.string().matches(telRegEx, "Mother Number is not valid").required("This field is required!"),
-    current_address: Yup.string()
-      .test("len", "must be between 5 and 100 characters.", (val) => val && val.toString().length >= 5 && val.toString().length <= 100)
-      .required("This field is required!"),
-    permanent_address: Yup.string()
-      .test("len", "must be between 5 and 100 characters.", (val) => val && val.toString().length >= 5 && val.toString().length <= 100)
-      .required("This field is required!"),
-    designation: Yup.string()
-      .matches(/^[a-zA-Z\s]+$/, "Designation can only contain letters and spaces")
-      .min(2, "Designation must be at least 2 characters long")
-      .max(50, "Designation must be at most 50 characters long")
-      .required("Designation is required"),
-    date_of_joining: Yup.date("This is not a valid date.").required("Date format is required"),
   });
 
   const validationSchemaUpdate = Yup.object().shape({
     first_Name: Yup.string()
       .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
       .required("This field is required!"),
-    last_name: Yup.string()
-      .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
-      .required("This field is required!"),
-    middle_Name: Yup.string()
-      .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
-      .required("This field is required!"),
-    date_of_birth: Yup.date()
-      .max(new Date(Date.now() - 567648000000), "You must be at least 18 years")
-      .required("Required"),
-    mobile_number: Yup.string().matches(telRegEx, "Mobile Number is not valid").required("This field is required!"),
-    alternate_number: Yup.string().matches(telRegEx, "Alternate Number is not valid").required("This field is required!"),
-    father_number: Yup.string().matches(telRegEx, "father Number is not valid").required("This field is required!"),
-    mother_number: Yup.string().matches(telRegEx, "Mother Number is not valid").required("This field is required!"),
-    current_address: Yup.string()
-      .test("len", "must be between 5 and 100 characters.", (val) => val && val.toString().length >= 5 && val.toString().length <= 100)
-      .required("This field is required!"),
-    permanent_address: Yup.string()
-      .test("len", "must be between 5 and 100 characters.", (val) => val && val.toString().length >= 5 && val.toString().length <= 100)
-      .required("This field is required!"),
-    designation: Yup.string()
-      .matches(/^[a-zA-Z\s]+$/, "Designation can only contain letters and spaces")
-      .min(2, "Designation must be at least 2 characters long")
-      .max(50, "Designation must be at most 50 characters long")
-      .required("Designation is required"),
-    date_of_joining: Yup.date("This is not a valid date.").required("Date format is required"),
-    pancard: Yup.string().required("This field is required!"),
-    ID_number: Yup.string().required("This field is required!"),
-    bank_name: Yup.string().required("This field is required!"),
-    bank_account: Yup.string().required("This field is required!"),
-    number_bank: Yup.string().required("This field is required!"),
-    IFSC_code: Yup.string().required("This field is required!"),
-    upload_Document: Yup.string().required("This field is required!"),
-    employee_image: Yup.string().required("This field is required!"),
   });
 
   const formFieldsAdd = [
@@ -181,14 +110,6 @@ export default function CompanyDashboard() {
     { name: "permanent_address", type: "text", label: "permanent_address" },
     { name: "designation", type: "text", label: "designation" },
     { name: "date_of_joining", type: "text", label: "date_of_joining" },
-    { name: "pancard", type: "text", label: "pancard" },
-    { name: "ID_number", type: "text", label: "ID_number" },
-    { name: "bank_name", type: "text", label: "bank_name" },
-    { name: "bank_account", type: "text", label: "bank_account" },
-    { name: "number_bank", type: "text", label: "number_bank" },
-    { name: "IFSC_code", type: "text", label: "IFSC_code" },
-    { name: "upload_Document", type: "text", label: "upload_Document" },
-    { name: "employee_image", type: "text", label: "employee_image" },
   ];
 
   const handleRegister = (formValue, { resetForm }) => {
@@ -230,31 +151,10 @@ export default function CompanyDashboard() {
   };
 
   const handleUpdate = (formValue, { resetForm }) => {
-    const {
-      _id,
-      first_Name,
-      last_name,
-      middle_Name,
-      date_of_birth,
-      mobile_number,
-      alternate_number,
-      father_number,
-      mother_number,
-      current_address,
-      permanent_address,
-      designation,
-      date_of_joining,
-      pancard,
-      ID_number,
-      bank_name,
-      bank_account,
-      number_bank,
-      IFSC_code,
-      upload_Document,
-      employee_image,
-    } = currentEmployee;
-
-    console.log("Employee ID:", _id); // Ensure _id is logged correctly
+    const { first_Name, last_name, middle_Name, date_of_birth, mobile_number, alternate_number, father_number, mother_number, current_address, permanent_address, designation, date_of_joining } = formValue;
+    const _id = currentEmployee?._id;
+    console.log("id", _id);
+    console.log("currentEmployee", currentEmployee);
 
     setSuccessful(false);
     dispatch(
@@ -272,15 +172,6 @@ export default function CompanyDashboard() {
         permanent_address,
         designation,
         date_of_joining,
-        pancard,
-        ID_number,
-        bank_name,
-        bank_account,
-        number_bank,
-        IFSC_code,
-        upload_Document,
-        employee_image,
-        toast,
       })
     )
       .unwrap()
@@ -314,6 +205,18 @@ export default function CompanyDashboard() {
     }
   }, [successful]);
 
+  const handleEditClick = (employee) => {
+    setIsUpdate(true);
+    setCurrentEmployee(employee);
+    setInitialValuesUpdate({
+      ...employee,
+      company_id: companyID,
+    });
+    setModelOpen(true);
+  };
+
+  useEffect(() => {}, [currentEmployee]);
+
   // format date/time
   function formatDate(dateStr) {
     const date = new Date(dateStr);
@@ -326,27 +229,6 @@ export default function CompanyDashboard() {
 
     return `${dayWithSuffix} ${month}, ${year} ${hours}:${minutes}`;
   }
-
-  const passwordVisible = () => {
-    if (password === "password") {
-      setpassword("text");
-      setShow(false);
-    } else {
-      setpassword("password");
-      setShow(true);
-    }
-  };
-
-  const handleEditClick = (employee) => {
-    setIsUpdate(true);
-    setCurrentEmployee(employee);
-    setInitialValuesUpdate({
-      ...employee,
-      company_id: companyID,
-    });
-    setModelOpen(true);
-  };
-  useEffect(() => {}, [initialValuesUpdate]);
 
   return (
     <PrivateRoute>
@@ -385,7 +267,9 @@ export default function CompanyDashboard() {
                   <span className="text-sm">{formatDate(e.created_at)}</span>
                 </div>
                 <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  {e.first_Name} {e.middle_Name} {e.last_name}
+                  {e.first_Name}&nbsp;
+                  {e.middle_Name}&nbsp;
+                  {e.last_name}
                 </h2>
                 <p className="mb-2 font-light text-gray-500 dark:text-gray-400">{e.email_id}</p>
                 <p className="font-light text-gray-500 dark:text-gray-400">{e.mobile_number}</p>

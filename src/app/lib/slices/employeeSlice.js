@@ -4,42 +4,12 @@ import employeeService from "../services/employeeService";
 // Get the employee token from localStorage if it exists and parse it
 const employee = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('employeeToken')) : null;
 
-// employee Auth Registration
+// Employee Auth Registration
 export const EmployeeSignup = createAsyncThunk(
     "auth/employee/register",
-    async ({ first_Name,
-        last_name,
-        middle_Name,
-        date_of_birth,
-        email_id,
-        password,
-        mobile_number,
-        alternate_number,
-        father_number,
-        mother_number,
-        current_address,
-        permanent_address,
-        designation,
-        date_of_joining,
-        company_id,
-        employee_id }, thunkAPI) => {
+    async (payload, thunkAPI) => {
         try {
-            const response = await employeeService.employeeregister(first_Name,
-                last_name,
-                middle_Name,
-                date_of_birth,
-                email_id,
-                password,
-                mobile_number,
-                alternate_number,
-                father_number,
-                mother_number,
-                current_address,
-                permanent_address,
-                designation,
-                date_of_joining,
-                company_id,
-                employee_id);
+            const response = await employeeService.employeeregister(payload);
             await new Promise(resolve => setTimeout(resolve, 1500));
             return response.data.data;
         } catch (error) {
@@ -48,7 +18,7 @@ export const EmployeeSignup = createAsyncThunk(
     }
 );
 
-// employee Auth Login
+// Employee Auth Login
 export const EmployeeLogin = createAsyncThunk(
     "auth/employee/login",
     async ({ email_id, password, router }, thunkAPI) => {
@@ -68,8 +38,7 @@ export const employeeLogout = createAsyncThunk("auth/logout", async () => {
     await employeeService.employeelogout();
 });
 
-
-// getEmployeesbyID
+// Get Employees by ID
 export const getEmployeesbyID = createAsyncThunk(
     "employee/getEmployeesbyID",
     async ({ companyID }, thunkApi) => {
@@ -82,59 +51,13 @@ export const getEmployeesbyID = createAsyncThunk(
     }
 );
 
-
 // Employee Update
 export const EmployeeUpdate = createAsyncThunk(
     "auth/employee/update",
-    async ({ _id,
-        first_Name,
-        last_name,
-        middle_Name,
-        date_of_birth,
-        mobile_number,
-        alternate_number,
-        father_number,
-        mother_number,
-        current_address,
-        permanent_address,
-        designation,
-        date_of_joining,
-        pancard,
-        ID_number,
-        bank_name,
-        bank_account,
-        number_bank,
-        IFSC_code,
-        upload_Document,
-        employee_image,
-        toast }, thunkAPI) => {
+    async (payload, thunkAPI) => {
         try {
-            const response = await employeeService.employeeupdate(
-                _id,
-                first_Name,
-                last_name,
-                middle_Name,
-                date_of_birth,
-                mobile_number,
-                alternate_number,
-                father_number,
-                mother_number,
-                current_address,
-                permanent_address,
-                designation,
-                date_of_joining,
-                pancard,
-                ID_number,
-                bank_name,
-                bank_account,
-                number_bank,
-                IFSC_code,
-                upload_Document,
-                employee_image,
-                toast
-            );
+            const response = await employeeService.employeeupdate(payload);
             await new Promise(resolve => setTimeout(resolve, 1500));
-            console.log("id", _id);
             return response.data.data;
         } catch (error) {
             return thunkAPI.rejectWithValue(error.message);
@@ -159,32 +82,46 @@ const employeeSlice = createSlice({
         setLogout: (state) => {
             state.employee = { user: null };
             state.allemployeesbyID = null;
-            state.isLoggedIn = false;
+            localStorage.removeItem("employeeToken");
         },
     },
     extraReducers: (builder) => {
         builder
             .addCase(EmployeeSignup.pending, (state) => {
                 state.loading = true;
-                console.log("EmployeeSignup.pending");
             })
             .addCase(EmployeeSignup.fulfilled, (state, action) => {
                 state.loading = false;
                 state.employee.user = action.payload;
+                if (state.allemployeesbyID) {
+                    state.allemployeesbyID.push(action.payload);
+                } else {
+                    state.allemployeesbyID = [action.payload];
+                }
             })
             .addCase(EmployeeSignup.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(EmployeeLogin.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(EmployeeLogin.fulfilled, (state, action) => {
+                state.loading = false;
+                state.employee.user = action.payload;
+                localStorage.setItem('employeeToken', JSON.stringify(action.payload));
+            })
+            .addCase(EmployeeLogin.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
             .addCase(employeeLogout.fulfilled, (state) => {
                 state.loading = false;
                 localStorage.removeItem("employeeToken");
-                state.employee = null;
-                state.isLoggedIn = false;
+                state.employee = { user: null };
             })
             .addCase(getEmployeesbyID.pending, (state) => {
                 state.loading = true;
-                console.log("pending");
             })
             .addCase(getEmployeesbyID.fulfilled, (state, action) => {
                 state.loading = false;
@@ -199,14 +136,16 @@ const employeeSlice = createSlice({
             })
             .addCase(EmployeeUpdate.fulfilled, (state, action) => {
                 state.loading = false;
-                state.allemployeesbyID = action.payload;
-                console.log("fulfilled");
+                const updatedEmployee = action.payload;
+                const employeeIndex = state.allemployeesbyID.findIndex((employee) => employee._id === updatedEmployee._id);
+                if (employeeIndex !== -1) {
+                    state.allemployeesbyID[employeeIndex] = updatedEmployee;
+                }
             })
             .addCase(EmployeeUpdate.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
-                console.log("rejected", action.payload);
-            })
+            });
     },
 });
 

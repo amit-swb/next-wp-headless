@@ -1,21 +1,19 @@
 "use client";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import PrivateRoute from "../../../../Components/PrivateRoute/PrivateRoute";
-import { selectCompanyData, selectEmployeeData } from "@/lib/selector/selector";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import * as Yup from "yup";
 import { EmployeeSignup, EmployeeUpdate, getEmployeesbyID } from "@/lib/slices/employeeSlice";
 import DynamicModal from "../../../../Components/PopupModel/DynamicModel";
+import { selectCompanyData, selectEmployeeData } from "@/lib/selector/selector";
+import PrivateRoute from "../../../../Components/PrivateRoute/PrivateRoute";
 
 var telRegEx = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
 
 export default function CompanyDashboard() {
   const [modelOpen, setModelOpen] = useState(false);
-  const [show, setShow] = useState(true);
   const [successful, setSuccessful] = useState(false);
-  const [password, setpassword] = useState("password");
   const [isUpdate, setIsUpdate] = useState(false);
   const [currentEmployee, setCurrentEmployee] = useState("");
 
@@ -32,7 +30,19 @@ export default function CompanyDashboard() {
     if (!company) {
       router.push("/");
     }
-  }, [router]);
+  }, [router, company]);
+
+  useEffect(() => {
+    if (companyID) {
+      dispatch(getEmployeesbyID({ companyID }));
+    }
+  }, [companyID, successful, dispatch]);
+
+  useEffect(() => {
+    if (successful) {
+      setModelOpen(!modelOpen);
+    }
+  }, [successful]);
 
   const [initialValuesAdd, setInitialValuesAdd] = useState({
     first_Name: "",
@@ -65,18 +75,14 @@ export default function CompanyDashboard() {
     permanent_address: "",
     designation: "",
     date_of_joining: "",
-  });
-
-  const validationSchemaAdd = Yup.object().shape({
-    first_Name: Yup.string()
-      .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
-      .required("This field is required!"),
-  });
-
-  const validationSchemaUpdate = Yup.object().shape({
-    first_Name: Yup.string()
-      .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
-      .required("This field is required!"),
+    // pancard: "123",
+    // ID_number: "123",
+    // bank_name: "123",
+    // bank_account: "123",
+    // number_bank: "123",
+    // IFSC_code: "123",
+    // upload_Document: "123",
+    // employee_image: "123",
   });
 
   const formFieldsAdd = [
@@ -110,33 +116,56 @@ export default function CompanyDashboard() {
     { name: "permanent_address", type: "text", label: "permanent_address" },
     { name: "designation", type: "text", label: "designation" },
     { name: "date_of_joining", type: "text", label: "date_of_joining" },
+    // { name: "pancard", type: "text", label: "pancard" },
+    // { name: "ID_number", type: "text", label: "ID_number" },
+    // { name: "bank_name", type: "text", label: "bank_name" },
+    // { name: "bank_account", type: "text", label: "bank_account" },
+    // { name: "number_bank", type: "text", label: "number_bank" },
+    // { name: "IFSC_code", type: "text", label: "IFSC_code" },
+    // { name: "upload_Document", type: "text", label: "upload_Document" },
+    // { name: "employee_image", type: "text", label: "employee_image" },
   ];
 
-  const handleRegister = (formValue, { resetForm }) => {
-    const { first_Name, last_name, middle_Name, date_of_birth, email_id, password, mobile_number, alternate_number, father_number, mother_number, current_address, permanent_address, designation, date_of_joining, company_id } = formValue;
-    setSuccessful(false);
+  const validationSchemaAdd = Yup.object().shape({
+    first_Name: Yup.string()
+      .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
+      .required("This field is required!"),
+  });
 
-    dispatch(
-      EmployeeSignup({
-        first_Name,
-        last_name,
-        middle_Name,
-        date_of_birth,
-        email_id,
-        password,
-        mobile_number,
-        alternate_number,
-        father_number,
-        mother_number,
-        current_address,
-        permanent_address,
-        designation,
-        date_of_joining,
-        company_id,
-        toast,
-        router,
-      })
-    )
+  const validationSchemaUpdate = Yup.object().shape({
+    first_Name: Yup.string()
+      .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
+      .required("This field is required!"),
+  });
+
+  useEffect(() => {
+    if (currentEmployee) {
+      setInitialValuesUpdate({
+        first_Name: currentEmployee.first_Name,
+        last_name: currentEmployee.last_name,
+        middle_Name: currentEmployee.middle_Name,
+        date_of_birth: currentEmployee.date_of_birth,
+        mobile_number: currentEmployee.mobile_number,
+        alternate_number: currentEmployee.alternate_number,
+        father_number: currentEmployee.father_number,
+        mother_number: currentEmployee.mother_number,
+        current_address: currentEmployee.current_address,
+        permanent_address: currentEmployee.permanent_address,
+        designation: currentEmployee.designation,
+        date_of_joining: currentEmployee.date_of_joining,
+      });
+    }
+  }, [currentEmployee]);
+
+  const handleEditClick = (employee) => {
+    setIsUpdate(true);
+    setCurrentEmployee(employee);
+    setModelOpen(true);
+  };
+
+  const handleRegister = (formValue, { resetForm }) => {
+    setSuccessful(false);
+    dispatch(EmployeeSignup({ ...formValue, toast, router }))
       .unwrap()
       .then(() => {
         setSuccessful(true);
@@ -151,30 +180,10 @@ export default function CompanyDashboard() {
   };
 
   const handleUpdate = (formValue, { resetForm }) => {
-    const { first_Name, last_name, middle_Name, date_of_birth, mobile_number, alternate_number, father_number, mother_number, current_address, permanent_address, designation, date_of_joining } = formValue;
-    const _id = currentEmployee?._id;
-    console.log("id", _id);
-    console.log("currentEmployee", currentEmployee);
-
     setSuccessful(false);
-    dispatch(
-      EmployeeUpdate({
-        _id,
-        first_Name,
-        last_name,
-        middle_Name,
-        date_of_birth,
-        mobile_number,
-        alternate_number,
-        father_number,
-        mother_number,
-        current_address,
-        permanent_address,
-        designation,
-        date_of_joining,
-      })
-    )
-      .unwrap()
+    const updatedFormValue = { ...formValue, _id: currentEmployee?._id };
+
+    dispatch(EmployeeUpdate(updatedFormValue))
       .then(() => {
         setSuccessful(true);
         toast.success("Employee updated successfully");
@@ -193,32 +202,8 @@ export default function CompanyDashboard() {
     }, 1000);
   };
 
-  useEffect(() => {
-    if (companyID) {
-      dispatch(getEmployeesbyID({ companyID }));
-    }
-  }, [companyID, successful]);
-
-  useEffect(() => {
-    if (successful) {
-      setModelOpen(!modelOpen);
-    }
-  }, [successful]);
-
-  const handleEditClick = (employee) => {
-    setIsUpdate(true);
-    setCurrentEmployee(employee);
-    setInitialValuesUpdate({
-      ...employee,
-      company_id: companyID,
-    });
-    setModelOpen(true);
-  };
-
-  useEffect(() => {}, [currentEmployee]);
-
   // format date/time
-  function formatDate(dateStr) {
+  const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     const day = date.getDate();
     const month = date.toLocaleString("default", { month: "long" });
@@ -228,7 +213,7 @@ export default function CompanyDashboard() {
     const dayWithSuffix = day + (day % 10 === 1 && day !== 11 ? "st" : day % 10 === 2 && day !== 12 ? "nd" : day % 10 === 3 && day !== 13 ? "rd" : "th");
 
     return `${dayWithSuffix} ${month}, ${year} ${hours}:${minutes}`;
-  }
+  };
 
   return (
     <PrivateRoute>
@@ -262,23 +247,17 @@ export default function CompanyDashboard() {
                     <svg className="mr-1 w-3 h-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                       <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"></path>
                     </svg>
-                    {e.designation}
+                    Designation: {e?.designation}
                   </span>
-                  <span className="text-sm">{formatDate(e.created_at)}</span>
+                  <span className="text-sm">{formatDate(e?.date_of_joining)}</span>
                 </div>
-                <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  {e.first_Name}&nbsp;
-                  {e.middle_Name}&nbsp;
-                  {e.last_name}
-                </h2>
-                <p className="mb-2 font-light text-gray-500 dark:text-gray-400">{e.email_id}</p>
-                <p className="font-light text-gray-500 dark:text-gray-400">{e.mobile_number}</p>
+                <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{e?.first_Name + " " + e?.last_name}</h2>
+                <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">Current Address: {e?.current_address}</p>
                 <button
                   onClick={() => handleEditClick(e)}
-                  className="mt-5 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  type="button"
+                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                 >
-                  Edit
+                  Edit Employee
                 </button>
               </div>
             ))}

@@ -15,8 +15,7 @@ const employeeregister = (first_Name,
     permanent_address,
     designation,
     date_of_joining,
-    company_id,
-    employee_id,) => {
+    company_id,) => {
     return axios.post(LOCAL_BASE_API_URL + "/employee_registration", {
         first_Name,
         last_name,
@@ -33,42 +32,13 @@ const employeeregister = (first_Name,
         designation,
         date_of_joining,
         company_id,
-        employee_id,
     });
 };
 
-const employeeupdate = ({
-    first_Name,
-    last_name,
-    middle_Name,
-    date_of_birth,
-    mobile_number,
-    alternate_number,
-    father_number,
-    mother_number,
-    current_address,
-    permanent_address,
-    designation,
-    date_of_joining,
-    _id,
-}) => {
-    return axios.post(`${LOCAL_BASE_API_URL}/update_employee_details/${_id}`, {
-        first_Name,
-        last_name,
-        middle_Name,
-        date_of_birth,
-        mobile_number,
-        alternate_number,
-        father_number,
-        mother_number,
-        current_address,
-        permanent_address,
-        designation,
-        date_of_joining,
-    });
+const employeeupdate = ({ _id, ...updateData }) => {
+    console.log("_id from service", _id);
+    return axios.post(`${LOCAL_BASE_API_URL}/update_employee_details/${_id}`, updateData);
 };
-
-
 
 const employeelogin = (email_id, password) => {
     return axios.post(LOCAL_BASE_API_URL + "/employee_login", {

@@ -36,7 +36,6 @@ const employeeregister = (first_Name,
 };
 
 const employeeupdate = ({ _id, ...updateData }) => {
-    console.log("_id from service", _id);
     return axios.post(`${LOCAL_BASE_API_URL}/update_employee_details/${_id}`, updateData);
 };
 

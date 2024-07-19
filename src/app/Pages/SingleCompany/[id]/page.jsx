@@ -1,8 +1,7 @@
 "use client";
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSingleCompany } from "@/lib/slices/companySlice";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 
 const SingleCompany = () => {

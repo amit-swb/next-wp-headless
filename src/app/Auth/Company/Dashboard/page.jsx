@@ -75,14 +75,14 @@ export default function CompanyDashboard() {
     permanent_address: "",
     designation: "",
     date_of_joining: "",
-    // pancard: "123",
-    // ID_number: "123",
-    // bank_name: "123",
-    // bank_account: "123",
-    // number_bank: "123",
-    // IFSC_code: "123",
-    // upload_Document: "123",
-    // employee_image: "123",
+    pancard: "",
+    ID_number: "",
+    bank_name: "",
+    bank_account: "",
+    number_bank: "",
+    IFSC_code: "",
+    upload_Document: "",
+    employee_image: "",
   });
 
   const formFieldsAdd = [
@@ -116,14 +116,14 @@ export default function CompanyDashboard() {
     { name: "permanent_address", type: "text", label: "permanent_address" },
     { name: "designation", type: "text", label: "designation" },
     { name: "date_of_joining", type: "text", label: "date_of_joining" },
-    // { name: "pancard", type: "text", label: "pancard" },
-    // { name: "ID_number", type: "text", label: "ID_number" },
-    // { name: "bank_name", type: "text", label: "bank_name" },
-    // { name: "bank_account", type: "text", label: "bank_account" },
-    // { name: "number_bank", type: "text", label: "number_bank" },
-    // { name: "IFSC_code", type: "text", label: "IFSC_code" },
-    // { name: "upload_Document", type: "text", label: "upload_Document" },
-    // { name: "employee_image", type: "text", label: "employee_image" },
+    { name: "pancard", type: "text", label: "pancard" },
+    { name: "ID_number", type: "text", label: "ID_number" },
+    { name: "bank_name", type: "text", label: "bank_name" },
+    { name: "bank_account", type: "text", label: "bank_account" },
+    { name: "number_bank", type: "text", label: "number_bank" },
+    { name: "IFSC_code", type: "text", label: "IFSC_code" },
+    { name: "upload_Document", type: "text", label: "upload_Document" },
+    { name: "employee_image", type: "text", label: "employee_image" },
   ];
 
   const validationSchemaAdd = Yup.object().shape({
@@ -141,19 +141,28 @@ export default function CompanyDashboard() {
   useEffect(() => {
     if (currentEmployee) {
       setInitialValuesUpdate({
-        first_Name: currentEmployee.first_Name,
-        last_name: currentEmployee.last_name,
-        middle_Name: currentEmployee.middle_Name,
-        date_of_birth: currentEmployee.date_of_birth,
-        mobile_number: currentEmployee.mobile_number,
-        alternate_number: currentEmployee.alternate_number,
-        father_number: currentEmployee.father_number,
-        mother_number: currentEmployee.mother_number,
-        current_address: currentEmployee.current_address,
-        permanent_address: currentEmployee.permanent_address,
-        designation: currentEmployee.designation,
-        date_of_joining: currentEmployee.date_of_joining,
+        first_Name: currentEmployee.first_Name || "",
+        last_name: currentEmployee.last_name || "",
+        middle_Name: currentEmployee.middle_Name || "",
+        date_of_birth: currentEmployee.date_of_birth || "",
+        mobile_number: currentEmployee.mobile_number || "",
+        alternate_number: currentEmployee.alternate_number || "",
+        father_number: currentEmployee.father_number || "",
+        mother_number: currentEmployee.mother_number || "",
+        current_address: currentEmployee.current_address || "",
+        permanent_address: currentEmployee.permanent_address || "",
+        designation: currentEmployee.designation || "",
+        date_of_joining: currentEmployee.date_of_joining || "",
+        pancard: currentEmployee.pancard || "",
+        ID_number: currentEmployee.ID_number || "",
+        bank_name: currentEmployee.bank_name || "",
+        bank_account: currentEmployee.bank_account || "",
+        number_bank: currentEmployee.number_bank || "",
+        IFSC_code: currentEmployee.IFSC_code || "",
+        upload_Document: currentEmployee.upload_Document || "",
+        employee_image: currentEmployee.employee_image || "",
       });
+      console.log("initialValuesUpdate", initialValuesUpdate);
     }
   }, [currentEmployee]);
 

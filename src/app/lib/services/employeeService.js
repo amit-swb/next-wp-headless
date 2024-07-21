@@ -1,7 +1,25 @@
 import { LOCAL_BASE_API_URL } from "@/Readme";
 import axios from "axios";
 
-const employeeregister = (first_Name,
+const employeeregister = (
+  first_Name,
+  last_name,
+  middle_Name,
+  date_of_birth,
+  email_id,
+  password,
+  mobile_number,
+  alternate_number,
+  father_number,
+  mother_number,
+  current_address,
+  permanent_address,
+  designation,
+  date_of_joining,
+  company_id
+) => {
+  return axios.post(LOCAL_BASE_API_URL + "/employee_registration", {
+    first_Name,
     last_name,
     middle_Name,
     date_of_birth,
@@ -15,51 +33,44 @@ const employeeregister = (first_Name,
     permanent_address,
     designation,
     date_of_joining,
-    company_id,) => {
-    return axios.post(LOCAL_BASE_API_URL + "/employee_registration", {
-        first_Name,
-        last_name,
-        middle_Name,
-        date_of_birth,
-        email_id,
-        password,
-        mobile_number,
-        alternate_number,
-        father_number,
-        mother_number,
-        current_address,
-        permanent_address,
-        designation,
-        date_of_joining,
-        company_id,
-    });
+    company_id,
+  });
 };
 
 const employeeupdate = ({ _id, ...updateData }) => {
-    return axios.post(`${LOCAL_BASE_API_URL}/update_employee_details/${_id}`, updateData);
+  return axios.post(
+    `${LOCAL_BASE_API_URL}/update_employee_details/${_id}`,
+    updateData
+  );
 };
 
 const employeelogin = (email_id, password) => {
-    return axios.post(LOCAL_BASE_API_URL + "/employee_login", {
-        email_id, password
-    });
+  return axios.post(LOCAL_BASE_API_URL + "/employee_login", {
+    email_id,
+    password,
+  });
+};
+
+const employeedelete = ({ _id }) => {
+  console.log("employeedelete", _id);
+  return axios.delete(`${LOCAL_BASE_API_URL}/employee_delete/${_id}`);
 };
 
 const employeelogout = () => {
-    localStorage.removeItem("employeeToken");
+  localStorage.removeItem("employeeToken");
 };
 
 const employeesbyID = async (companyID) => {
-    return axios.get(`${LOCAL_BASE_API_URL}/get_employee/${companyID}`);
+  return axios.get(`${LOCAL_BASE_API_URL}/get_employee/${companyID}`);
 };
 
-
 const employeeService = {
-    employeeregister,
-    employeelogin,
-    employeelogout,
-    employeesbyID,
-    employeeupdate
+  employeeregister,
+  employeelogin,
+  employeelogout,
+  employeesbyID,
+  employeeupdate,
+  employeedelete,
 };
 
 export default employeeService;

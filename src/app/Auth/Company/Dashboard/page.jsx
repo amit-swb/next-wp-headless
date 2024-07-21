@@ -4,17 +4,25 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import * as Yup from "yup";
-import { EmployeeSignup, EmployeeUpdate, getEmployeesbyID } from "@/lib/slices/employeeSlice";
+import {
+  EmployeeDelete,
+  EmployeeSignup,
+  EmployeeUpdate,
+  getEmployeesbyID,
+} from "@/lib/slices/employeeSlice";
 import DynamicModal from "../../../../Components/PopupModel/DynamicModel";
 import { selectCompanyData, selectEmployeeData } from "@/lib/selector/selector";
 import PrivateRoute from "../../../../Components/PrivateRoute/PrivateRoute";
 
-var telRegEx = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
+var telRegEx =
+  /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
 
 export default function CompanyDashboard() {
+  const [isClient, setIsClient] = useState(false);
   const [modelOpen, setModelOpen] = useState(false);
   const [successful, setSuccessful] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
   const [currentEmployee, setCurrentEmployee] = useState("");
 
   const router = useRouter();
@@ -25,6 +33,7 @@ export default function CompanyDashboard() {
   const allemployeesbyID = employeedata?.allemployeesbyID;
 
   const companyID = company?.company_id;
+  const companyName = company?.company_name;
 
   useEffect(() => {
     if (!company) {
@@ -128,13 +137,23 @@ export default function CompanyDashboard() {
 
   const validationSchemaAdd = Yup.object().shape({
     first_Name: Yup.string()
-      .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
+      .test(
+        "len",
+        "must be between 3 and 20 characters.",
+        (val) =>
+          val && val.toString().length >= 3 && val.toString().length <= 20
+      )
       .required("This field is required!"),
   });
 
   const validationSchemaUpdate = Yup.object().shape({
     first_Name: Yup.string()
-      .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
+      .test(
+        "len",
+        "must be between 3 and 20 characters.",
+        (val) =>
+          val && val.toString().length >= 3 && val.toString().length <= 20
+      )
       .required("This field is required!"),
   });
 
@@ -162,12 +181,16 @@ export default function CompanyDashboard() {
         upload_Document: currentEmployee.upload_Document || "",
         employee_image: currentEmployee.employee_image || "",
       });
-      console.log("initialValuesUpdate", initialValuesUpdate);
     }
   }, [currentEmployee]);
 
   const handleEditClick = (employee) => {
     setIsUpdate(true);
+    setCurrentEmployee(employee);
+    setModelOpen(true);
+  };
+  const handleDeleteClick = (employee) => {
+    setIsDelete(true);
     setCurrentEmployee(employee);
     setModelOpen(true);
   };
@@ -205,6 +228,20 @@ export default function CompanyDashboard() {
       });
   };
 
+  const handleDelete = () => {
+    setSuccessful(false);
+    dispatch(EmployeeDelete(currentEmployee?._id))
+      .then(() => {
+        setSuccessful(true);
+        toast.success("Employee deleted successfully");
+        resetSuccessfulState();
+      })
+      .catch(() => {
+        setSuccessful(false);
+        toast.error("Employee deletion failed");
+      });
+  };
+
   const resetSuccessfulState = () => {
     setTimeout(() => {
       setSuccessful(false);
@@ -219,18 +256,36 @@ export default function CompanyDashboard() {
     const year = date.getFullYear();
     const hours = date.getHours();
     const minutes = date.getMinutes().toString().padStart(2, "0");
-    const dayWithSuffix = day + (day % 10 === 1 && day !== 11 ? "st" : day % 10 === 2 && day !== 12 ? "nd" : day % 10 === 3 && day !== 13 ? "rd" : "th");
+    const dayWithSuffix =
+      day +
+      (day % 10 === 1 && day !== 11
+        ? "st"
+        : day % 10 === 2 && day !== 12
+        ? "nd"
+        : day % 10 === 3 && day !== 13
+        ? "rd"
+        : "th");
 
     return `${dayWithSuffix} ${month}, ${year} ${hours}:${minutes}`;
   };
 
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
     <PrivateRoute>
       <section className="company_dashboard_sec">
+        <div>
+          <h2 className="m-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            {isClient ? `Hello ${companyName}!` : ""}
+          </h2>
+        </div>
         <div className="company_add_employee flex justify-center">
           <button
             onClick={() => {
               setIsUpdate(false);
+              setIsDelete(false);
               setModelOpen(true);
             }}
             className=" text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
@@ -238,35 +293,79 @@ export default function CompanyDashboard() {
             Add Employee
           </button>
           <DynamicModal
-            title={isUpdate ? "Edit Employee" : "Add New Employee"}
+            title={
+              isUpdate
+                ? "Edit Employee"
+                : isDelete
+                ? "Delete Employee"
+                : "Add New Employee"
+            }
             isOpen={modelOpen}
             onClose={() => setModelOpen(false)}
-            onSubmit={isUpdate ? handleUpdate : handleRegister}
-            initialValues={isUpdate ? initialValuesUpdate : initialValuesAdd}
-            validationSchema={isUpdate ? validationSchemaUpdate : validationSchemaAdd}
-            formFields={isUpdate ? formFieldsUpdate : formFieldsAdd}
+            onSubmit={
+              isUpdate ? handleUpdate : isDelete ? handleDelete : handleRegister
+            }
+            initialValues={
+              isUpdate
+                ? initialValuesUpdate
+                : isDelete
+                ? null
+                : initialValuesAdd
+            }
+            validationSchema={
+              isUpdate
+                ? validationSchemaUpdate
+                : isDelete
+                ? null
+                : validationSchemaAdd
+            }
+            formFields={
+              isUpdate ? formFieldsUpdate : isDelete ? [] : formFieldsAdd
+            }
+            isDelete={isDelete}
           />
         </div>
         <div className="added_employee_list">
           <div className="mx-auto mt-5 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 p-5 sm:mt-5 sm:pt-5 lg:mx-0 lg:max-w-none lg:grid-cols-3">
             {allemployeesbyID?.map((e) => (
-              <div key={e._id} className="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700" style={{ position: "relative" }}>
+              <div
+                key={e._id}
+                className="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+                style={{ position: "relative" }}
+              >
                 <div className="flex justify-between items-center mb-5 text-gray-500">
                   <span className="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-200 dark:text-primary-800">
-                    <svg className="mr-1 w-3 h-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <svg
+                      className="mr-1 w-3 h-3"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
                       <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"></path>
                     </svg>
                     Designation: {e?.designation}
                   </span>
-                  <span className="text-sm">{formatDate(e?.date_of_joining)}</span>
+                  <span className="text-sm">
+                    {formatDate(e?.date_of_joining)}
+                  </span>
                 </div>
-                <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{e?.first_Name + " " + e?.last_name}</h2>
-                <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">Current Address: {e?.current_address}</p>
+                <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  {e?.first_Name + " " + e?.last_name}
+                </h2>
+                <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                  Current Address: {e?.current_address}
+                </p>
                 <button
                   onClick={() => handleEditClick(e)}
                   className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                 >
                   Edit Employee
+                </button>
+                <button
+                  onClick={() => handleDeleteClick(e)}
+                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                >
+                  Delete Employee
                 </button>
               </div>
             ))}

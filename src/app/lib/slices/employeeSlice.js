@@ -186,7 +186,7 @@ const employeeSlice = createSlice({
       })
       .addCase(EmployeeDelete.fulfilled, (state, action) => {
         state.loading = false;
-        const deletedEmployeeId = action.payload.employeeId; // Adjust based on your API response structure
+        const deletedEmployeeId = action.payload.employeeId;
         state.allemployeesbyID = state.allemployeesbyID.filter(
           (employee) => employee._id !== deletedEmployeeId
         );

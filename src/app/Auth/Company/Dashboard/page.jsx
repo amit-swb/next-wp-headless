@@ -18,6 +18,7 @@ export default function CompanyDashboard() {
   const [isUpdate, setIsUpdate] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const [currentEmployee, setCurrentEmployee] = useState("");
+  const [uploadedFile, setUploadedFile] = useState(null);
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -85,7 +86,7 @@ export default function CompanyDashboard() {
     number_bank: "",
     IFSC_code: "",
     upload_Document: "",
-    employee_image: "",
+    employee_image: null,
   });
 
   const formFieldsAdd = [
@@ -126,19 +127,73 @@ export default function CompanyDashboard() {
     { name: "number_bank", type: "text", label: "number_bank" },
     { name: "IFSC_code", type: "text", label: "IFSC_code" },
     { name: "upload_Document", type: "text", label: "upload_Document" },
-    { name: "employee_image", type: "text", label: "employee_image" },
+    { name: "employee_image", type: "file", label: "employee_image" },
   ];
 
   const validationSchemaAdd = Yup.object().shape({
     first_Name: Yup.string()
       .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
       .required("This field is required!"),
+    last_name: Yup.string()
+      .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
+      .required("This field is required!"),
+    middle_Name: Yup.string()
+      .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
+      .required("This field is required!"),
+    date_of_birth: Yup.date()
+      .max(new Date(Date.now() - 567648000000), "You must be at least 18 years")
+      .required("Required"),
+    email_id: Yup.string().email("This is not a valid email_id.").required("This field is required!"),
+    password: Yup.string()
+      .test("len", "must be between 6 and 40 characters.", (val) => val && val.toString().length >= 6 && val.toString().length <= 40)
+      .required("This field is required!"),
+    mobile_number: Yup.string().matches(telRegEx, "Mobile Number is not valid").required("This field is required!"),
+    alternate_number: Yup.string().matches(telRegEx, "Alternate Number is not valid").required("This field is required!"),
+    father_number: Yup.string().matches(telRegEx, "father Number is not valid").required("This field is required!"),
+    mother_number: Yup.string().matches(telRegEx, "Mother Number is not valid").required("This field is required!"),
+    current_address: Yup.string()
+      .test("len", "must be between 5 and 100 characters.", (val) => val && val.toString().length >= 5 && val.toString().length <= 100)
+      .required("This field is required!"),
+    permanent_address: Yup.string()
+      .test("len", "must be between 5 and 100 characters.", (val) => val && val.toString().length >= 5 && val.toString().length <= 100)
+      .required("This field is required!"),
+    designation: Yup.string()
+      .matches(/^[a-zA-Z\s]+$/, "Designation can only contain letters and spaces")
+      .min(2, "Designation must be at least 2 characters long")
+      .max(50, "Designation must be at most 50 characters long")
+      .required("Designation is required"),
+    date_of_joining: Yup.date("This is not a valid date.").required("Date format is required"),
   });
 
   const validationSchemaUpdate = Yup.object().shape({
     first_Name: Yup.string()
       .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
       .required("This field is required!"),
+    last_name: Yup.string()
+      .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
+      .required("This field is required!"),
+    middle_Name: Yup.string()
+      .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
+      .required("This field is required!"),
+    date_of_birth: Yup.date()
+      .max(new Date(Date.now() - 567648000000), "You must be at least 18 years")
+      .required("Required"),
+    mobile_number: Yup.string().matches(telRegEx, "Mobile Number is not valid").required("This field is required!"),
+    alternate_number: Yup.string().matches(telRegEx, "Alternate Number is not valid").required("This field is required!"),
+    father_number: Yup.string().matches(telRegEx, "father Number is not valid").required("This field is required!"),
+    mother_number: Yup.string().matches(telRegEx, "Mother Number is not valid").required("This field is required!"),
+    current_address: Yup.string()
+      .test("len", "must be between 5 and 100 characters.", (val) => val && val.toString().length >= 5 && val.toString().length <= 100)
+      .required("This field is required!"),
+    permanent_address: Yup.string()
+      .test("len", "must be between 5 and 100 characters.", (val) => val && val.toString().length >= 5 && val.toString().length <= 100)
+      .required("This field is required!"),
+    designation: Yup.string()
+      .matches(/^[a-zA-Z\s]+$/, "Designation can only contain letters and spaces")
+      .min(2, "Designation must be at least 2 characters long")
+      .max(50, "Designation must be at most 50 characters long")
+      .required("Designation is required"),
+    date_of_joining: Yup.date("This is not a valid date.").required("Date format is required"),
   });
 
   useEffect(() => {
@@ -163,7 +218,7 @@ export default function CompanyDashboard() {
         number_bank: currentEmployee.number_bank || "",
         IFSC_code: currentEmployee.IFSC_code || "",
         upload_Document: currentEmployee.upload_Document || "",
-        employee_image: currentEmployee.employee_image || "",
+        // employee_image: currentEmployee.employee_image || null,
       });
     }
   }, [currentEmployee]);
@@ -195,9 +250,23 @@ export default function CompanyDashboard() {
       });
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setUploadedFile(file);
+  };
+
   const handleUpdate = (formValue, { resetForm }) => {
     setSuccessful(false);
-    const updatedFormValue = { ...formValue, _id: currentEmployee?._id };
+
+    const formData = new FormData();
+    if (uploadedFile) {
+      formData.append("file", uploadedFile);
+    }
+    for (const [key, value] of formData.entries()) {
+      console.log(`fdfdsf`, value);
+    }
+
+    const updatedFormValue = { ...formValue, formData, _id: currentEmployee?._id };
 
     dispatch(EmployeeUpdate(updatedFormValue))
       .then(() => {
@@ -251,8 +320,6 @@ export default function CompanyDashboard() {
     setIsClient(true);
   }, []);
 
-  console.log("isDelete", isDelete);
-
   return (
     <PrivateRoute>
       <section className="company_dashboard_sec">
@@ -271,7 +338,7 @@ export default function CompanyDashboard() {
             Add Employee
           </button>
           <DynamicModal
-            title={isUpdate ? "Edit Employee" : isDelete ? "Delete Employee" : "Add New Employee"}
+            title={isUpdate ? "Edit Employee" : isDelete ? "Are you Sure? Delete Employee" : "Add New Employee"}
             isOpen={modelOpen}
             onClose={() => setModelOpen(false)}
             onSubmit={isUpdate ? handleUpdate : isDelete ? handleDelete : handleRegister}
@@ -279,6 +346,8 @@ export default function CompanyDashboard() {
             validationSchema={isUpdate ? validationSchemaUpdate : isDelete ? null : validationSchemaAdd}
             formFields={isUpdate ? formFieldsUpdate : isDelete ? [] : formFieldsAdd}
             isDelete={isDelete}
+            isUpdate={isUpdate}
+            onFileChange={handleFileChange}
           />
         </div>
         <div className="added_employee_list">

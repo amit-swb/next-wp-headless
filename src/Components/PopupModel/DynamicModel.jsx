@@ -5,7 +5,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
-const DynamicModal = ({ title, isOpen, onClose, initialValues, validationSchema, onSubmit, formFields, showPassword, passwordVisible, isDelete }) => {
+const DynamicModal = ({ onFileChange, title, isOpen, onClose, initialValues, validationSchema, onSubmit, formFields, showPassword, passwordVisible, isDelete, isUpdate }) => {
   return (
     <div id="dynamic_modal" tabIndex="-1" aria-hidden="true" className={`flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full ${!isOpen ? "hidden" : ""}`}>
       <div className="relative p-4 w-full max-w-xl max-h-full">
@@ -22,7 +22,7 @@ const DynamicModal = ({ title, isOpen, onClose, initialValues, validationSchema,
           <div className="p-4">
             {!isDelete && (
               <Formik enableReinitialize initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-                <Form className="space-y-4 md:space-y-6">
+                <Form className="space-y-4 md:space-y-6" encType="multipart/form-data">
                   <div className="grid grid-cols-2 gap-2">
                     <>
                       {formFields.map(({ name, type, label }) => (
@@ -34,6 +34,7 @@ const DynamicModal = ({ title, isOpen, onClose, initialValues, validationSchema,
                             name={name}
                             type={name === "password" ? showPassword : type}
                             disabled={name === "company_id"}
+                            {...(name === "employee_image" && { onChange: onFileChange })}
                             className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                           />
                           {name === "password" && (
@@ -80,7 +81,7 @@ const DynamicModal = ({ title, isOpen, onClose, initialValues, validationSchema,
                     onClick={onSubmit}
                     className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                   >
-                    {title}
+                    Delete
                   </button>
                 </div>
                 <div className="form-group">

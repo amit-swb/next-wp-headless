@@ -4,12 +4,18 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import * as Yup from "yup";
-import { EmployeeDelete, EmployeeSignup, EmployeeUpdate, getEmployeesbyID } from "@/lib/slices/employeeSlice";
+import {
+  EmployeeDelete,
+  EmployeeSignup,
+  EmployeeUpdate,
+  getEmployeesbyID,
+} from "@/lib/slices/employeeSlice";
 import DynamicModal from "../../../../Components/PopupModel/DynamicModel";
 import { selectCompanyData, selectEmployeeData } from "@/lib/selector/selector";
 import PrivateRoute from "../../../../Components/PrivateRoute/PrivateRoute";
 
-var telRegEx = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
+var telRegEx =
+  /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
 
 export default function CompanyDashboard() {
   const [isClient, setIsClient] = useState(false);
@@ -18,7 +24,8 @@ export default function CompanyDashboard() {
   const [isUpdate, setIsUpdate] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const [currentEmployee, setCurrentEmployee] = useState("");
-  const [uploadedFile, setUploadedFile] = useState(null);
+  const [file, setFile] = useState("");
+  const [image, setImage] = useState("");
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -86,7 +93,7 @@ export default function CompanyDashboard() {
     number_bank: "",
     IFSC_code: "",
     upload_Document: "",
-    employee_image: null,
+    employee_image: image,
   });
 
   const formFieldsAdd = [
@@ -132,69 +139,173 @@ export default function CompanyDashboard() {
 
   const validationSchemaAdd = Yup.object().shape({
     first_Name: Yup.string()
-      .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
+      .test(
+        "len",
+        "must be between 3 and 20 characters.",
+        (val) =>
+          val && val.toString().length >= 3 && val.toString().length <= 20
+      )
       .required("This field is required!"),
     last_name: Yup.string()
-      .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
+      .test(
+        "len",
+        "must be between 3 and 20 characters.",
+        (val) =>
+          val && val.toString().length >= 3 && val.toString().length <= 20
+      )
       .required("This field is required!"),
     middle_Name: Yup.string()
-      .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
+      .test(
+        "len",
+        "must be between 3 and 20 characters.",
+        (val) =>
+          val && val.toString().length >= 3 && val.toString().length <= 20
+      )
       .required("This field is required!"),
     date_of_birth: Yup.date()
       .max(new Date(Date.now() - 567648000000), "You must be at least 18 years")
       .required("Required"),
-    email_id: Yup.string().email("This is not a valid email_id.").required("This field is required!"),
-    password: Yup.string()
-      .test("len", "must be between 6 and 40 characters.", (val) => val && val.toString().length >= 6 && val.toString().length <= 40)
+    email_id: Yup.string()
+      .email("This is not a valid email_id.")
       .required("This field is required!"),
-    mobile_number: Yup.string().matches(telRegEx, "Mobile Number is not valid").required("This field is required!"),
-    alternate_number: Yup.string().matches(telRegEx, "Alternate Number is not valid").required("This field is required!"),
-    father_number: Yup.string().matches(telRegEx, "father Number is not valid").required("This field is required!"),
-    mother_number: Yup.string().matches(telRegEx, "Mother Number is not valid").required("This field is required!"),
+    password: Yup.string()
+      .test(
+        "len",
+        "must be between 6 and 40 characters.",
+        (val) =>
+          val && val.toString().length >= 6 && val.toString().length <= 40
+      )
+      .required("This field is required!"),
+    mobile_number: Yup.string()
+      .matches(telRegEx, "Mobile Number is not valid")
+      .required("This field is required!"),
+    alternate_number: Yup.string()
+      .matches(telRegEx, "Alternate Number is not valid")
+      .required("This field is required!"),
+    father_number: Yup.string()
+      .matches(telRegEx, "father Number is not valid")
+      .required("This field is required!"),
+    mother_number: Yup.string()
+      .matches(telRegEx, "Mother Number is not valid")
+      .required("This field is required!"),
     current_address: Yup.string()
-      .test("len", "must be between 5 and 100 characters.", (val) => val && val.toString().length >= 5 && val.toString().length <= 100)
+      .test(
+        "len",
+        "must be between 5 and 100 characters.",
+        (val) =>
+          val && val.toString().length >= 5 && val.toString().length <= 100
+      )
       .required("This field is required!"),
     permanent_address: Yup.string()
-      .test("len", "must be between 5 and 100 characters.", (val) => val && val.toString().length >= 5 && val.toString().length <= 100)
+      .test(
+        "len",
+        "must be between 5 and 100 characters.",
+        (val) =>
+          val && val.toString().length >= 5 && val.toString().length <= 100
+      )
       .required("This field is required!"),
     designation: Yup.string()
-      .matches(/^[a-zA-Z\s]+$/, "Designation can only contain letters and spaces")
+      .matches(
+        /^[a-zA-Z\s]+$/,
+        "Designation can only contain letters and spaces"
+      )
       .min(2, "Designation must be at least 2 characters long")
       .max(50, "Designation must be at most 50 characters long")
       .required("Designation is required"),
-    date_of_joining: Yup.date("This is not a valid date.").required("Date format is required"),
+    date_of_joining: Yup.date("This is not a valid date.").required(
+      "Date format is required"
+    ),
   });
 
   const validationSchemaUpdate = Yup.object().shape({
     first_Name: Yup.string()
-      .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
+      .test(
+        "len",
+        "must be between 3 and 20 characters.",
+        (val) =>
+          val && val.toString().length >= 3 && val.toString().length <= 20
+      )
       .required("This field is required!"),
     last_name: Yup.string()
-      .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
+      .test(
+        "len",
+        "must be between 3 and 20 characters.",
+        (val) =>
+          val && val.toString().length >= 3 && val.toString().length <= 20
+      )
       .required("This field is required!"),
     middle_Name: Yup.string()
-      .test("len", "must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
+      .test(
+        "len",
+        "must be between 3 and 20 characters.",
+        (val) =>
+          val && val.toString().length >= 3 && val.toString().length <= 20
+      )
       .required("This field is required!"),
     date_of_birth: Yup.date()
       .max(new Date(Date.now() - 567648000000), "You must be at least 18 years")
       .required("Required"),
-    mobile_number: Yup.string().matches(telRegEx, "Mobile Number is not valid").required("This field is required!"),
-    alternate_number: Yup.string().matches(telRegEx, "Alternate Number is not valid").required("This field is required!"),
-    father_number: Yup.string().matches(telRegEx, "father Number is not valid").required("This field is required!"),
-    mother_number: Yup.string().matches(telRegEx, "Mother Number is not valid").required("This field is required!"),
+    mobile_number: Yup.string()
+      .matches(telRegEx, "Mobile Number is not valid")
+      .required("This field is required!"),
+    alternate_number: Yup.string()
+      .matches(telRegEx, "Alternate Number is not valid")
+      .required("This field is required!"),
+    father_number: Yup.string()
+      .matches(telRegEx, "father Number is not valid")
+      .required("This field is required!"),
+    mother_number: Yup.string()
+      .matches(telRegEx, "Mother Number is not valid")
+      .required("This field is required!"),
     current_address: Yup.string()
-      .test("len", "must be between 5 and 100 characters.", (val) => val && val.toString().length >= 5 && val.toString().length <= 100)
+      .test(
+        "len",
+        "must be between 5 and 100 characters.",
+        (val) =>
+          val && val.toString().length >= 5 && val.toString().length <= 100
+      )
       .required("This field is required!"),
     permanent_address: Yup.string()
-      .test("len", "must be between 5 and 100 characters.", (val) => val && val.toString().length >= 5 && val.toString().length <= 100)
+      .test(
+        "len",
+        "must be between 5 and 100 characters.",
+        (val) =>
+          val && val.toString().length >= 5 && val.toString().length <= 100
+      )
       .required("This field is required!"),
     designation: Yup.string()
-      .matches(/^[a-zA-Z\s]+$/, "Designation can only contain letters and spaces")
+      .matches(
+        /^[a-zA-Z\s]+$/,
+        "Designation can only contain letters and spaces"
+      )
       .min(2, "Designation must be at least 2 characters long")
       .max(50, "Designation must be at most 50 characters long")
       .required("Designation is required"),
-    date_of_joining: Yup.date("This is not a valid date.").required("Date format is required"),
+    date_of_joining: Yup.date("This is not a valid date.").required(
+      "Date format is required"
+    ),
   });
+
+  function previeFile(file) {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onloadend = () => {
+      setImage(reader.result);
+    };
+  }
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFile(file);
+    previeFile(file);
+  };
+
+  useEffect(() => {
+    if (image) {
+      // console.log("image", image);
+    }
+  }, [image]);
 
   useEffect(() => {
     if (currentEmployee) {
@@ -218,7 +329,7 @@ export default function CompanyDashboard() {
         number_bank: currentEmployee.number_bank || "",
         IFSC_code: currentEmployee.IFSC_code || "",
         upload_Document: currentEmployee.upload_Document || "",
-        // employee_image: currentEmployee.employee_image || null,
+        employee_image: image || null,
       });
     }
   }, [currentEmployee]);
@@ -250,23 +361,14 @@ export default function CompanyDashboard() {
       });
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setUploadedFile(file);
-  };
-
   const handleUpdate = (formValue, { resetForm }) => {
     setSuccessful(false);
 
-    const formData = new FormData();
-    if (uploadedFile) {
-      formData.append("file", uploadedFile);
-    }
-    for (const [key, value] of formData.entries()) {
-      console.log(`fdfdsf`, value);
-    }
-
-    const updatedFormValue = { ...formValue, formData, _id: currentEmployee?._id };
+    const updatedFormValue = {
+      ...formValue,
+      employee_image: image,
+      _id: currentEmployee?._id,
+    };
 
     dispatch(EmployeeUpdate(updatedFormValue))
       .then(() => {
@@ -311,7 +413,15 @@ export default function CompanyDashboard() {
     const year = date.getFullYear();
     const hours = date.getHours();
     const minutes = date.getMinutes().toString().padStart(2, "0");
-    const dayWithSuffix = day + (day % 10 === 1 && day !== 11 ? "st" : day % 10 === 2 && day !== 12 ? "nd" : day % 10 === 3 && day !== 13 ? "rd" : "th");
+    const dayWithSuffix =
+      day +
+      (day % 10 === 1 && day !== 11
+        ? "st"
+        : day % 10 === 2 && day !== 12
+        ? "nd"
+        : day % 10 === 3 && day !== 13
+        ? "rd"
+        : "th");
 
     return `${dayWithSuffix} ${month}, ${year} ${hours}:${minutes}`;
   };
@@ -324,7 +434,9 @@ export default function CompanyDashboard() {
     <PrivateRoute>
       <section className="company_dashboard_sec">
         <div>
-          <h2 className="m-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{isClient ? `Hello ${companyName}!` : ""}</h2>
+          <h2 className="m-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            {isClient ? `Hello ${companyName}!` : ""}
+          </h2>
         </div>
         <div className="company_add_employee flex justify-center">
           <button
@@ -338,33 +450,71 @@ export default function CompanyDashboard() {
             Add Employee
           </button>
           <DynamicModal
-            title={isUpdate ? "Edit Employee" : isDelete ? "Are you Sure? Delete Employee" : "Add New Employee"}
+            title={
+              isUpdate
+                ? "Edit Employee"
+                : isDelete
+                ? "Are you Sure? Delete Employee"
+                : "Add New Employee"
+            }
             isOpen={modelOpen}
             onClose={() => setModelOpen(false)}
-            onSubmit={isUpdate ? handleUpdate : isDelete ? handleDelete : handleRegister}
-            initialValues={isUpdate ? initialValuesUpdate : isDelete ? null : initialValuesAdd}
-            validationSchema={isUpdate ? validationSchemaUpdate : isDelete ? null : validationSchemaAdd}
-            formFields={isUpdate ? formFieldsUpdate : isDelete ? [] : formFieldsAdd}
+            onSubmit={
+              isUpdate ? handleUpdate : isDelete ? handleDelete : handleRegister
+            }
+            initialValues={
+              isUpdate
+                ? initialValuesUpdate
+                : isDelete
+                ? null
+                : initialValuesAdd
+            }
+            validationSchema={
+              isUpdate
+                ? validationSchemaUpdate
+                : isDelete
+                ? null
+                : validationSchemaAdd
+            }
+            formFields={
+              isUpdate ? formFieldsUpdate : isDelete ? [] : formFieldsAdd
+            }
             isDelete={isDelete}
             isUpdate={isUpdate}
             onFileChange={handleFileChange}
+            image={image}
           />
         </div>
         <div className="added_employee_list">
           <div className="mx-auto mt-5 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 p-5 sm:mt-5 sm:pt-5 lg:mx-0 lg:max-w-none lg:grid-cols-3">
             {allemployeesbyID?.map((e) => (
-              <div key={e._id} className="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700" style={{ position: "relative" }}>
+              <div
+                key={e._id}
+                className="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+                style={{ position: "relative" }}
+              >
                 <div className="flex justify-between items-center mb-5 text-gray-500">
                   <span className="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-200 dark:text-primary-800">
-                    <svg className="mr-1 w-3 h-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <svg
+                      className="mr-1 w-3 h-3"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
                       <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"></path>
                     </svg>
                     Designation: {e?.designation}
                   </span>
-                  <span className="text-sm">{formatDate(e?.date_of_joining)}</span>
+                  <span className="text-sm">
+                    {formatDate(e?.date_of_joining)}
+                  </span>
                 </div>
-                <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{e?.first_Name + " " + e?.last_name}</h2>
-                <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">Current Address: {e?.current_address}</p>
+                <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  {e?.first_Name + " " + e?.last_name}
+                </h2>
+                <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                  Current Address: {e?.current_address}
+                </p>
                 <button
                   onClick={() => {
                     handleEditClick(e);

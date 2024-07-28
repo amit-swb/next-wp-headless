@@ -13,6 +13,7 @@ import {
 import DynamicModal from "../../../../Components/PopupModel/DynamicModel";
 import { selectCompanyData, selectEmployeeData } from "@/lib/selector/selector";
 import PrivateRoute from "../../../../Components/PrivateRoute/PrivateRoute";
+import Link from "next/link";
 
 var telRegEx =
   /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
@@ -510,7 +511,9 @@ export default function CompanyDashboard() {
                   </span>
                 </div>
                 <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  {e?.first_Name + " " + e?.last_name}
+                  <Link href={`/Auth/Employee/Profile/${e._id}`}>
+                    {e?.first_Name + " " + e?.last_name}
+                  </Link>
                 </h2>
                 <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
                   Current Address: {e?.current_address}

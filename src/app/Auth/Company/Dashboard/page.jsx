@@ -7,7 +7,6 @@ import * as Yup from "yup";
 import {
   EmployeeDelete,
   EmployeeSignup,
-  EmployeeUpdate,
   getEmployeesbyID,
 } from "@/lib/slices/employeeSlice";
 import DynamicModal from "../../../../Components/PopupModel/DynamicModel";
@@ -22,11 +21,8 @@ export default function CompanyDashboard() {
   const [isClient, setIsClient] = useState(false);
   const [modelOpen, setModelOpen] = useState(false);
   const [successful, setSuccessful] = useState(false);
-  const [isUpdate, setIsUpdate] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const [currentEmployee, setCurrentEmployee] = useState("");
-  const [file, setFile] = useState("");
-  const [image, setImage] = useState("");
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -56,7 +52,7 @@ export default function CompanyDashboard() {
     }
   }, [successful]);
 
-  const [initialValuesAdd, setInitialValuesAdd] = useState({
+  const initialValuesAdd = {
     first_Name: "",
     last_name: "",
     middle_Name: "",
@@ -72,30 +68,7 @@ export default function CompanyDashboard() {
     designation: "",
     date_of_joining: "",
     company_id: companyID || "",
-  });
-
-  const [initialValuesUpdate, setInitialValuesUpdate] = useState({
-    first_Name: "",
-    last_name: "",
-    middle_Name: "",
-    date_of_birth: "",
-    mobile_number: "",
-    alternate_number: "",
-    father_number: "",
-    mother_number: "",
-    current_address: "",
-    permanent_address: "",
-    designation: "",
-    date_of_joining: "",
-    pancard: "",
-    ID_number: "",
-    bank_name: "",
-    bank_account: "",
-    number_bank: "",
-    IFSC_code: "",
-    upload_Document: "",
-    employee_image: image,
-  });
+  };
 
   const formFieldsAdd = [
     { name: "first_Name", type: "text", label: "first_Name" },
@@ -113,29 +86,6 @@ export default function CompanyDashboard() {
     { name: "designation", type: "text", label: "designation" },
     { name: "date_of_joining", type: "text", label: "date_of_joining" },
     { name: "company_id", type: "text", label: "company_id" },
-  ];
-
-  const formFieldsUpdate = [
-    { name: "first_Name", type: "text", label: "first_Name" },
-    { name: "last_name", type: "text", label: "last_name" },
-    { name: "middle_Name", type: "text", label: "middle_Name" },
-    { name: "date_of_birth", type: "text", label: "date_of_birth" },
-    { name: "mobile_number", type: "tel", label: "mobile_number" },
-    { name: "alternate_number", type: "tel", label: "alternate_number" },
-    { name: "father_number", type: "tel", label: "father_number" },
-    { name: "mother_number", type: "tel", label: "mother_number" },
-    { name: "current_address", type: "text", label: "current_address" },
-    { name: "permanent_address", type: "text", label: "permanent_address" },
-    { name: "designation", type: "text", label: "designation" },
-    { name: "date_of_joining", type: "text", label: "date_of_joining" },
-    { name: "pancard", type: "text", label: "pancard" },
-    { name: "ID_number", type: "text", label: "ID_number" },
-    { name: "bank_name", type: "text", label: "bank_name" },
-    { name: "bank_account", type: "text", label: "bank_account" },
-    { name: "number_bank", type: "text", label: "number_bank" },
-    { name: "IFSC_code", type: "text", label: "IFSC_code" },
-    { name: "upload_Document", type: "text", label: "upload_Document" },
-    { name: "employee_image", type: "file", label: "employee_image" },
   ];
 
   const validationSchemaAdd = Yup.object().shape({
@@ -218,128 +168,6 @@ export default function CompanyDashboard() {
     ),
   });
 
-  const validationSchemaUpdate = Yup.object().shape({
-    first_Name: Yup.string()
-      .test(
-        "len",
-        "must be between 3 and 20 characters.",
-        (val) =>
-          val && val.toString().length >= 3 && val.toString().length <= 20
-      )
-      .required("This field is required!"),
-    last_name: Yup.string()
-      .test(
-        "len",
-        "must be between 3 and 20 characters.",
-        (val) =>
-          val && val.toString().length >= 3 && val.toString().length <= 20
-      )
-      .required("This field is required!"),
-    middle_Name: Yup.string()
-      .test(
-        "len",
-        "must be between 3 and 20 characters.",
-        (val) =>
-          val && val.toString().length >= 3 && val.toString().length <= 20
-      )
-      .required("This field is required!"),
-    date_of_birth: Yup.date()
-      .max(new Date(Date.now() - 567648000000), "You must be at least 18 years")
-      .required("Required"),
-    mobile_number: Yup.string()
-      .matches(telRegEx, "Mobile Number is not valid")
-      .required("This field is required!"),
-    alternate_number: Yup.string()
-      .matches(telRegEx, "Alternate Number is not valid")
-      .required("This field is required!"),
-    father_number: Yup.string()
-      .matches(telRegEx, "father Number is not valid")
-      .required("This field is required!"),
-    mother_number: Yup.string()
-      .matches(telRegEx, "Mother Number is not valid")
-      .required("This field is required!"),
-    current_address: Yup.string()
-      .test(
-        "len",
-        "must be between 5 and 100 characters.",
-        (val) =>
-          val && val.toString().length >= 5 && val.toString().length <= 100
-      )
-      .required("This field is required!"),
-    permanent_address: Yup.string()
-      .test(
-        "len",
-        "must be between 5 and 100 characters.",
-        (val) =>
-          val && val.toString().length >= 5 && val.toString().length <= 100
-      )
-      .required("This field is required!"),
-    designation: Yup.string()
-      .matches(
-        /^[a-zA-Z\s]+$/,
-        "Designation can only contain letters and spaces"
-      )
-      .min(2, "Designation must be at least 2 characters long")
-      .max(50, "Designation must be at most 50 characters long")
-      .required("Designation is required"),
-    date_of_joining: Yup.date("This is not a valid date.").required(
-      "Date format is required"
-    ),
-  });
-
-  function previeFile(file) {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-
-    reader.onloadend = () => {
-      setImage(reader.result);
-    };
-  }
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setFile(file);
-    previeFile(file);
-  };
-
-  useEffect(() => {
-    if (image) {
-      // console.log("image", image);
-    }
-  }, [image]);
-
-  useEffect(() => {
-    if (currentEmployee) {
-      setInitialValuesUpdate({
-        first_Name: currentEmployee.first_Name || "",
-        last_name: currentEmployee.last_name || "",
-        middle_Name: currentEmployee.middle_Name || "",
-        date_of_birth: currentEmployee.date_of_birth || "",
-        mobile_number: currentEmployee.mobile_number || "",
-        alternate_number: currentEmployee.alternate_number || "",
-        father_number: currentEmployee.father_number || "",
-        mother_number: currentEmployee.mother_number || "",
-        current_address: currentEmployee.current_address || "",
-        permanent_address: currentEmployee.permanent_address || "",
-        designation: currentEmployee.designation || "",
-        date_of_joining: currentEmployee.date_of_joining || "",
-        pancard: currentEmployee.pancard || "",
-        ID_number: currentEmployee.ID_number || "",
-        bank_name: currentEmployee.bank_name || "",
-        bank_account: currentEmployee.bank_account || "",
-        number_bank: currentEmployee.number_bank || "",
-        IFSC_code: currentEmployee.IFSC_code || "",
-        upload_Document: currentEmployee.upload_Document || "",
-        employee_image: image || null,
-      });
-    }
-  }, [currentEmployee]);
-
-  const handleEditClick = (employee) => {
-    setIsUpdate(true);
-    setCurrentEmployee(employee);
-    setModelOpen(true);
-  };
   const handleDeleteClick = (employee) => {
     setIsDelete(true);
     setCurrentEmployee(employee);
@@ -359,28 +187,6 @@ export default function CompanyDashboard() {
       .catch(() => {
         setSuccessful(false);
         toast.error("Employee addition failed");
-      });
-  };
-
-  const handleUpdate = (formValue, { resetForm }) => {
-    setSuccessful(false);
-
-    const updatedFormValue = {
-      ...formValue,
-      employee_image: image,
-      _id: currentEmployee?._id,
-    };
-
-    dispatch(EmployeeUpdate(updatedFormValue))
-      .then(() => {
-        setSuccessful(true);
-        toast.success("Employee updated successfully");
-        resetSuccessfulState();
-        resetForm();
-      })
-      .catch(() => {
-        setSuccessful(false);
-        toast.error("Employee update failed");
       });
   };
 
@@ -442,48 +248,24 @@ export default function CompanyDashboard() {
         <div className="company_add_employee flex justify-center">
           <button
             onClick={() => {
-              setIsUpdate(false);
               setIsDelete(false);
               setModelOpen(true);
             }}
-            className=" text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+            className="text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
           >
             Add Employee
           </button>
           <DynamicModal
             title={
-              isUpdate
-                ? "Edit Employee"
-                : isDelete
-                ? "Are you Sure? Delete Employee"
-                : "Add New Employee"
+              isDelete ? "Are you Sure? Delete Employee" : "Add New Employee"
             }
             isOpen={modelOpen}
             onClose={() => setModelOpen(false)}
-            onSubmit={
-              isUpdate ? handleUpdate : isDelete ? handleDelete : handleRegister
-            }
-            initialValues={
-              isUpdate
-                ? initialValuesUpdate
-                : isDelete
-                ? null
-                : initialValuesAdd
-            }
-            validationSchema={
-              isUpdate
-                ? validationSchemaUpdate
-                : isDelete
-                ? null
-                : validationSchemaAdd
-            }
-            formFields={
-              isUpdate ? formFieldsUpdate : isDelete ? [] : formFieldsAdd
-            }
+            onSubmit={isDelete ? handleDelete : handleRegister}
+            initialValues={isDelete ? null : initialValuesAdd}
+            validationSchema={isDelete ? null : validationSchemaAdd}
+            formFields={isDelete ? [] : formFieldsAdd}
             isDelete={isDelete}
-            isUpdate={isUpdate}
-            onFileChange={handleFileChange}
-            image={image}
           />
         </div>
         <div className="added_employee_list">
@@ -518,19 +300,14 @@ export default function CompanyDashboard() {
                 <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
                   Current Address: {e?.current_address}
                 </p>
-                <button
-                  onClick={() => {
-                    handleEditClick(e);
-                    setIsDelete(false);
-                  }}
-                  className="inline-flex mr-2 items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                >
-                  Edit Employee
-                </button>
+                <Link href={`/Auth/Employee/Profile/${e._id}`}>
+                  <button className="inline-flex mr-2 items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                    Read More
+                  </button>
+                </Link>
                 <button
                   onClick={() => {
                     handleDeleteClick(e);
-                    setIsUpdate(false);
                   }}
                   className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                 >

@@ -29,6 +29,7 @@ const Breadcrumb = () => {
             break;
           case "profile":
             text = "Profile";
+            isDisabled = true;
             break;
           case "registration":
             text = "Registration";

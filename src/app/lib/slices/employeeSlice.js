@@ -1,12 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import employeeService from "../services/employeeService";
 
-// Get the employee token from localStorage if it exists and parse it
-const employee =
-  typeof window !== "undefined"
-    ? JSON.parse(localStorage.getItem("employeeToken"))
-    : null;
-
 // employee Auth Registration
 export const EmployeeSignup = createAsyncThunk(
   "auth/employee/register",
@@ -91,7 +85,7 @@ export const getEmployeesbyID = createAsyncThunk(
   }
 );
 
-// Update the EmployeeUpdate thunk to handle formValue correctly
+// Update the EmployeeUpdate 
 export const EmployeeUpdate = createAsyncThunk(
   "auth/employee/update",
   async (formValue, thunkAPI) => {
@@ -110,11 +104,11 @@ export const EmployeeDelete = createAsyncThunk(
   "auth/employee/delete",
   async (employeeId, thunkAPI) => {
     try {
-      const response = await employeeService.employeedelete(employeeId); // Adjust the service method to your API endpoint
-      await new Promise((resolve) => setTimeout(resolve, 1500)); // Optional: Simulate delay
-      return response.data.data; // Return the deleted employee data if needed
+      const response = await employeeService.employeedelete(employeeId);
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      return response.data.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message); // Handle errors and provide a rejected value
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );

@@ -1,7 +1,6 @@
 "use client";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { SinglePostCol } from "../Components/SinglePostCol";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchPost } from "./lib/slices/postSlice";
 
@@ -17,7 +16,7 @@ export default function Home() {
     <motion.div initial="hidden" animate="visible" exit={{ opacity: 0, transition: { duration: 1 } }} variants={{ visible: { transition: { staggerChildren: 0.3 } } }} className="blog_listing py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:mx-0">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Blog Listing page</h2>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Welcome!!!</h2>
           <p className="mt-2 text-lg leading-8 ">Learn how to grow your business with our expert advice.</p>
         </div>
         {loading ? (
@@ -32,11 +31,7 @@ export default function Home() {
             </svg>
           </div>
         ) : (
-          <div className="mx-auto mt-5 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 sm:mt-5 sm:pt-5 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-            {posts?.map((post) => (
-              <SinglePostCol key={post.id} post={post} />
-            ))}
-          </div>
+          <div className="mx-auto mt-5 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 sm:mt-5 sm:pt-5 lg:mx-0 lg:max-w-none lg:grid-cols-3"></div>
         )}
       </div>
     </motion.div>

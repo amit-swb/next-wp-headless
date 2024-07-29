@@ -60,7 +60,7 @@ export default function Header() {
                   </>
                 )}
                 <li className="mr-12">
-                  <Link href="/Pages/AllCompany" className="text-coolGray-500 hover:text-coolGray-900 font-medium">
+                  <Link href="/AllCompany" className="text-coolGray-500 hover:text-coolGray-900 font-medium">
                     AllCompany
                   </Link>
                 </li>
@@ -118,7 +118,7 @@ export default function Header() {
                     </>
                   )}
                   <li className="mt-5">
-                    <Link href="/Pages/AllCompany" className="text-coolGray-500 hover:text-coolGray-900 font-medium" onClick={() => setShowMenu(!showMenu)}>
+                    <Link href="/AllCompany" className="text-coolGray-500 hover:text-coolGray-900 font-medium" onClick={() => setShowMenu(!showMenu)}>
                       AllCompany
                     </Link>
                   </li>

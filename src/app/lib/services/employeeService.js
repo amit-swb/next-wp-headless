@@ -52,7 +52,6 @@ const employeelogin = (email_id, password) => {
 };
 
 const employeedelete = ({ _id }) => {
-  console.log("employeedelete", _id);
   return axios.delete(`${LOCAL_BASE_API_URL}/employee_delete/${_id}`);
 };
 

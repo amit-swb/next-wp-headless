@@ -2,30 +2,27 @@
 import { selectCompanyData, selectEmployeeData } from "@/lib/selector/selector";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { EmployeeUpdate, getEmployeesbyID } from "@/lib/slices/employeeSlice";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencil } from "@fortawesome/free-solid-svg-icons";
 
-var telRegEx =
-  /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
+var telRegEx = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
 
 export default function EmployeeProfile() {
-  const [isClient, setIsClient] = useState(false);
   const [successful, setSuccessful] = useState(false);
   const [file, setFile] = useState(null);
   const [image, setImage] = useState("");
   const { id } = useParams();
-  const router = useRouter();
   const dispatch = useDispatch();
   const companydata = useSelector(selectCompanyData);
   const employeedata = useSelector(selectEmployeeData);
   const company = companydata?.company?.user;
   const allemployeesbyID = employeedata?.allemployeesbyID;
-  const singleEmployee = allemployeesbyID?.find(
-    (employee) => employee._id === id
-  );
+  const singleEmployee = allemployeesbyID?.find((employee) => employee._id === id);
   const companyID = company?.company_id;
 
   const initialValues = {
@@ -48,7 +45,6 @@ export default function EmployeeProfile() {
     number_bank: singleEmployee?.number_bank || "",
     IFSC_code: singleEmployee?.IFSC_code || "",
     upload_Document: singleEmployee?.upload_Document || "",
-    // employee_image: singleEmployee?.employee_image || null,
   };
 
   const formFieldsUpdate = [
@@ -76,74 +72,33 @@ export default function EmployeeProfile() {
 
   const validationSchemaUpdate = Yup.object().shape({
     first_Name: Yup.string()
-      .test(
-        "len",
-        "Must be between 3 and 20 characters.",
-        (val) =>
-          val && val.toString().length >= 3 && val.toString().length <= 20
-      )
+      .test("len", "Must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
       .required("This field is required!"),
     last_name: Yup.string()
-      .test(
-        "len",
-        "Must be between 3 and 20 characters.",
-        (val) =>
-          val && val.toString().length >= 3 && val.toString().length <= 20
-      )
+      .test("len", "Must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
       .required("This field is required!"),
     middle_Name: Yup.string()
-      .test(
-        "len",
-        "Must be between 3 and 20 characters.",
-        (val) =>
-          val && val.toString().length >= 3 && val.toString().length <= 20
-      )
+      .test("len", "Must be between 3 and 20 characters.", (val) => val && val.toString().length >= 3 && val.toString().length <= 20)
       .required("This field is required!"),
     date_of_birth: Yup.date()
-      .max(
-        new Date(Date.now() - 567648000000),
-        "You must be at least 18 years old"
-      )
+      .max(new Date(Date.now() - 567648000000), "You must be at least 18 years old")
       .required("Required"),
-    mobile_number: Yup.string()
-      .matches(telRegEx, "Mobile Number is not valid")
-      .required("This field is required!"),
-    alternate_number: Yup.string()
-      .matches(telRegEx, "Alternate Number is not valid")
-      .required("This field is required!"),
-    father_number: Yup.string()
-      .matches(telRegEx, "Father Number is not valid")
-      .required("This field is required!"),
-    mother_number: Yup.string()
-      .matches(telRegEx, "Mother Number is not valid")
-      .required("This field is required!"),
+    mobile_number: Yup.string().matches(telRegEx, "Mobile Number is not valid").required("This field is required!"),
+    alternate_number: Yup.string().matches(telRegEx, "Alternate Number is not valid").required("This field is required!"),
+    father_number: Yup.string().matches(telRegEx, "Father Number is not valid").required("This field is required!"),
+    mother_number: Yup.string().matches(telRegEx, "Mother Number is not valid").required("This field is required!"),
     current_address: Yup.string()
-      .test(
-        "len",
-        "Must be between 5 and 100 characters.",
-        (val) =>
-          val && val.toString().length >= 5 && val.toString().length <= 100
-      )
+      .test("len", "Must be between 5 and 100 characters.", (val) => val && val.toString().length >= 5 && val.toString().length <= 100)
       .required("This field is required!"),
     permanent_address: Yup.string()
-      .test(
-        "len",
-        "Must be between 5 and 100 characters.",
-        (val) =>
-          val && val.toString().length >= 5 && val.toString().length <= 100
-      )
+      .test("len", "Must be between 5 and 100 characters.", (val) => val && val.toString().length >= 5 && val.toString().length <= 100)
       .required("This field is required!"),
     designation: Yup.string()
-      .matches(
-        /^[a-zA-Z\s]+$/,
-        "Designation can only contain letters and spaces"
-      )
+      .matches(/^[a-zA-Z\s]+$/, "Designation can only contain letters and spaces")
       .min(2, "Designation must be at least 2 characters long")
       .max(50, "Designation must be at most 50 characters long")
       .required("Designation is required"),
-    date_of_joining: Yup.date("This is not a valid date.").required(
-      "Date format is required"
-    ),
+    date_of_joining: Yup.date("This is not a valid date.").required("Date format is required"),
   });
 
   useEffect(() => {
@@ -173,7 +128,7 @@ export default function EmployeeProfile() {
     }
   }, [image]);
 
-  const handleUpdate = (formValue, { resetForm }) => {
+  const handleUpdate = (formValue) => {
     setSuccessful(false);
 
     const updatedFormValue = {
@@ -183,11 +138,10 @@ export default function EmployeeProfile() {
     };
 
     dispatch(EmployeeUpdate(updatedFormValue))
+      .unwrap()
       .then(() => {
         setSuccessful(true);
         toast.success("Employee updated successfully");
-        resetSuccessfulState();
-        resetForm();
       })
       .catch(() => {
         setSuccessful(false);
@@ -195,54 +149,18 @@ export default function EmployeeProfile() {
       });
   };
 
-  // format date/time
-  const formatDate = (dateStr) => {
-    const date = new Date(dateStr);
-    const day = date.getDate();
-    const month = date.toLocaleString("default", { month: "long" });
-    const year = date.getFullYear();
-    const hours = date.getHours();
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    const dayWithSuffix =
-      day +
-      (day % 10 === 1 && day !== 11
-        ? "st"
-        : day % 10 === 2 && day !== 12
-        ? "nd"
-        : day % 10 === 3 && day !== 13
-        ? "rd"
-        : "th");
-
-    return `${dayWithSuffix} ${month}, ${year} ${hours}:${minutes}`;
-  };
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
   return (
     <>
       <section className="bg-white dark:bg-gray-900 py-4 px-4 mx-auto max-w-screen-xl lg:py-8 lg:px-6">
-        <div className="flex flex-col gap-y-8 mx-auto max-w-screen-sm text-center lg:mb-16 mb-8">
-          <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
-            Single Employee Detail
-          </h2>
+        <div className="flex flex-col gap-y-8 mx-auto max-w-screen-sm lg:mb-16 mb-8">
+          <h2 className="text-center mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Single Employee Detail</h2>
           <div className="employee_update_form">
-            <Formik
-              enableReinitialize
-              initialValues={initialValues}
-              validationSchema={validationSchemaUpdate}
-              onSubmit={handleUpdate}
-            >
+            <Formik enableReinitialize initialValues={initialValues} validationSchema={validationSchemaUpdate} onSubmit={handleUpdate}>
               {({ setFieldValue }) => (
                 <Form className="space-y-4 md:space-y-6">
                   <div className="relative">
                     <div className="employee_avatar flex justify-center">
-                      <img
-                        src={image || singleEmployee?.employee_image}
-                        alt="Employee"
-                        className="w-32 h-32 object-cover rounded-full border-2 border-gray-300"
-                      />
+                      <img src={image || singleEmployee?.employee_image} alt="Employee" className="w-32 h-32 object-cover rounded-full border-2 border-gray-300" />
                       <label
                         htmlFor="employee_image"
                         className="absolute bottom-0 left-50 p-2 bg-gray-800 rounded-full cursor-pointer"
@@ -264,26 +182,22 @@ export default function EmployeeProfile() {
                           accept="image/*"
                           onChange={(e) => {
                             handleFileChange(e);
-                            setFieldValue(
-                              "employee_image",
-                              e.currentTarget.files[0]
-                            );
+                            setFieldValue("employee_image", e.currentTarget.files[0]);
                           }}
                           className="hidden"
                         />
-                        <span className="text-white">✎</span>
+                        <span className="text-white">
+                          <FontAwesomeIcon icon={faPencil} />
+                        </span>
                       </label>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     {formFieldsUpdate
-                      .filter(({ name }) => name !== "employee_image") // Exclude 'employee_image'
+                      .filter(({ name }) => name !== "employee_image")
                       .map(({ name, type, label }) => (
                         <div className="form-group" key={name}>
-                          <label
-                            htmlFor={name}
-                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                          >
+                          <label htmlFor={name} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                             {label}
                           </label>
                           <Field
@@ -291,19 +205,12 @@ export default function EmployeeProfile() {
                             type={type}
                             className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                           />
-                          <ErrorMessage
-                            name={name}
-                            component="div"
-                            className="text-red-800"
-                          />
+                          <ErrorMessage name={name} component="div" className="text-red-800" />
                         </div>
                       ))}
                   </div>
                   <div className="form-group mt-5">
-                    <button
-                      type="submit"
-                      className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                    >
+                    <button type="submit" className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                       Update Profile
                     </button>
                   </div>
@@ -312,6 +219,7 @@ export default function EmployeeProfile() {
             </Formik>
           </div>
         </div>
+        <ToastContainer />
       </section>
     </>
   );

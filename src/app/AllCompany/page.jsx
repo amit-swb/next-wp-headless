@@ -1,17 +1,19 @@
 "use client";
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCompany } from "@/lib/slices/companySlice";
 import Link from "next/link";
+import { Field, Form, Formik } from "formik";
 
 const AllCompany = () => {
   const dispatch = useDispatch();
-
   const { allcompany } = useSelector((state) => state.company);
+
+  const [filter, setFilter] = useState("");
 
   const fetchAllCompany = useCallback(() => {
     dispatch(getAllCompany());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     fetchAllCompany();
@@ -23,16 +25,33 @@ const AllCompany = () => {
     return date.toLocaleDateString("en-US", options);
   }
 
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value);
+  };
+
+  const filteredCompanies = allcompany?.filter((company) => company.company_name.toLowerCase().includes(filter.toLowerCase()));
+
   return (
     <>
-      {allcompany?.length > 0 ? (
-        <section className="bg-white dark:bg-gray-900">
-          <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-            <div className="mx-auto max-w-screen-sm text-center lg:mb-16 mb-8">
-              <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">All Companies</h2>
-            </div>
+      <section className="bg-white dark:bg-gray-900">
+        <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+          <div className="mx-auto max-w-screen-sm text-center lg:mb-16 mb-8">
+            <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">All Companies</h2>
+            <Formik>
+              <Form>
+                <Field
+                  type="text"
+                  placeholder="Filter by company name"
+                  value={filter}
+                  onChange={handleFilterChange}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                />
+              </Form>
+            </Formik>
+          </div>
+          {filteredCompanies?.length > 0 ? (
             <div className="grid gap-8 lg:grid-cols-2">
-              {allcompany.map((company) => (
+              {filteredCompanies.map((company) => (
                 <article key={company._id} className="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
                   <div className="flex justify-between items-center mb-5 text-gray-500">
                     <span className="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-200 dark:text-primary-800">
@@ -44,11 +63,11 @@ const AllCompany = () => {
                     <span className="text-sm">{formatDate(company.created_at)}</span>
                   </div>
                   <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                    <Link href={`/Pages/SingleCompany/${company._id}`}>{company.company_name}</Link>
+                    <Link href={`/SingleCompany/${company._id}`}>{company.company_name}</Link>
                   </h2>
                   <p className="mb-5 font-light text-gray-500 dark:text-gray-400">Email : {company.email_id}</p>
                   <div className="flex justify-between items-center">
-                    <Link href={`/Pages/SingleCompany/${company._id}`} className="inline-flex items-center font-medium text-primary-600 dark:text-primary-500 hover:underline">
+                    <Link href={`/SingleCompany/${company._id}`} className="inline-flex items-center font-medium text-primary-600 dark:text-primary-500 hover:underline">
                       Read more
                       <svg className="ml-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"></path>
@@ -58,11 +77,11 @@ const AllCompany = () => {
                 </article>
               ))}
             </div>
-          </div>
-        </section>
-      ) : (
-        <p>No companies found.</p>
-      )}
+          ) : (
+            <p>No companies found.</p>
+          )}
+        </div>
+      </section>
     </>
   );
 };

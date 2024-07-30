@@ -44,19 +44,8 @@ const employeeupdate = ({ _id, ...updateData }) => {
   );
 };
 
-const employeelogin = (email_id, password) => {
-  return axios.post(LOCAL_BASE_API_URL + "/employee_login", {
-    email_id,
-    password,
-  });
-};
-
 const employeedelete = ({ _id }) => {
   return axios.delete(`${LOCAL_BASE_API_URL}/employee_delete/${_id}`);
-};
-
-const employeelogout = () => {
-  localStorage.removeItem("employeeToken");
 };
 
 const employeesbyID = async (companyID) => {
@@ -65,8 +54,6 @@ const employeesbyID = async (companyID) => {
 
 const employeeService = {
   employeeregister,
-  employeelogin,
-  employeelogout,
   employeesbyID,
   employeeupdate,
   employeedelete,

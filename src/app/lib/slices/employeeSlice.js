@@ -52,26 +52,6 @@ export const EmployeeSignup = createAsyncThunk(
   }
 );
 
-// employee Auth Login
-export const EmployeeLogin = createAsyncThunk(
-  "auth/employee/login",
-  async ({ email_id, password, router }, thunkAPI) => {
-    try {
-      const response = await employeeService.employeelogin(email_id, password);
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      router.push("/Auth/employee/Profile");
-      return response.data.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
-    }
-  }
-);
-
-// Employee Logout
-export const employeeLogout = createAsyncThunk("auth/logout", async () => {
-  await employeeService.employeelogout();
-});
-
 // getEmployeesbyID
 export const getEmployeesbyID = createAsyncThunk(
   "employee/getEmployeesbyID",
@@ -142,12 +122,6 @@ const employeeSlice = createSlice({
       .addCase(EmployeeSignup.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      })
-      .addCase(employeeLogout.fulfilled, (state) => {
-        state.loading = false;
-        localStorage.removeItem("employeeToken");
-        state.employee = null;
-        state.isLoggedIn = false;
       })
       .addCase(getEmployeesbyID.pending, (state) => {
         state.loading = true;

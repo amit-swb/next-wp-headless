@@ -3,6 +3,7 @@ import { createSelector } from 'reselect';
 const selectAdminState = (state) => state.admin;
 const selectCompanyState = (state) => state.company;
 const selectEmployeeState = (state) => state.employee;
+const selectHrState = (state) => state.hr;
 
 // selectors for admin state
 export const selectAdminData = createSelector(
@@ -23,6 +24,17 @@ export const selectEmployeeData = createSelector(
         loading: employee.loading,
         employee: employee.employee,
         allemployeesbyID: employee.allemployeesbyID,
+    })
+);
+// selectors for hr state
+export const selectHrData = createSelector(
+    [selectHrState],
+    (hr) => ({
+        error: hr.error,
+        isLoggedIn: hr.isLoggedIn,
+        loading: hr.loading,
+        hr: hr.hr,
+        allHrbyID: hr.allHrbyID,
     })
 );
 

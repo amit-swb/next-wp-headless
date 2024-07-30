@@ -16,7 +16,8 @@ export default function EmployeeProfile() {
   const [successful, setSuccessful] = useState(false);
   const [file, setFile] = useState(null);
   const [image, setImage] = useState("");
-  const { id } = useParams();
+  const { id, role } = useParams();
+
   const dispatch = useDispatch();
   const companydata = useSelector(selectCompanyData);
   const employeedata = useSelector(selectEmployeeData);
@@ -153,7 +154,7 @@ export default function EmployeeProfile() {
     <>
       <section className="bg-white dark:bg-gray-900 py-4 px-4 mx-auto max-w-screen-xl lg:py-8 lg:px-6">
         <div className="flex flex-col gap-y-8 mx-auto max-w-screen-sm lg:mb-16 mb-8">
-          <h2 className="text-center mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Single Employee Detail</h2>
+          <h2 className="text-center mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Single {role} Detail</h2>
           <div className="employee_update_form">
             <Formik enableReinitialize initialValues={initialValues} validationSchema={validationSchemaUpdate} onSubmit={handleUpdate}>
               {({ setFieldValue }) => (

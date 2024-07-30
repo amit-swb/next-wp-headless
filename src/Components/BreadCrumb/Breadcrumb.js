@@ -42,6 +42,10 @@ const Breadcrumb = () => {
             text = "Employee";
             isDisabled = true;
             break;
+          case "hr":
+            text = "Hr";
+            isDisabled = true;
+            break;
           case "singlecompany":
             text = "Singlecompany";
             isDisabled = true;

@@ -3,6 +3,7 @@ import postReducer from "../slices/postSlice";
 import adminReducer from "../slices/adminSlice";
 import companyReducer from "../slices/companySlice";
 import employeeReducer from "../slices/employeeSlice";
+import hrReducer from "../slices/hrSlice";
 
 export function makeStore() {
     return configureStore({
@@ -11,6 +12,7 @@ export function makeStore() {
             admin: adminReducer,
             company: companyReducer,
             employee: employeeReducer,
+            hr: hrReducer,
         },
         devTools: process.env.NODE_ENV !== "production",
     });

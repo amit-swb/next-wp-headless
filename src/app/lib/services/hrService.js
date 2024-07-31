@@ -5,7 +5,6 @@ const hrregister = (formValue) => {
     return axios.post(LOCAL_BASE_API_URL + "/hr_registration", formValue);
 };
 
-
 const hrupdate = ({ _id, ...updateData }) => {
     return axios.post(
         `${LOCAL_BASE_API_URL}/update_hr_details/${_id}`,

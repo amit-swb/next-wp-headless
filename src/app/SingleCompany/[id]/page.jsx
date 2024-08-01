@@ -1,18 +1,18 @@
 "use client";
-import dynamic from "next/dynamic";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSingleCompany } from "@/lib/slices/companySlice";
 import { useParams } from "next/navigation";
 
-const SingleCompanyComponent = () => {
+const SingleCompany = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const { singlecompany } = useSelector((state) => state.company);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (id) {
-      dispatch(getSingleCompany({ id }));
+      dispatch(getSingleCompany({ id })).finally(() => setLoading(false));
     }
   }, [id, dispatch]);
 
@@ -22,8 +22,16 @@ const SingleCompanyComponent = () => {
     return date.toLocaleDateString("en-US", options);
   }
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!singlecompany) {
+    return <div>No company found</div>;
+  }
+
   return (
-    <section className="bg-white dark:bg-gray-900 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6" suppressHydrationWarning={true}>
+    <section className="bg-white dark:bg-gray-900 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6" suppressHydrationWarning>
       <div className="mx-auto max-w-screen-sm text-center lg:mb-16 mb-8">
         <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Single Company Detail</h2>
       </div>
@@ -62,7 +70,5 @@ const SingleCompanyComponent = () => {
     </section>
   );
 };
-
-const SingleCompany = dynamic(() => Promise.resolve(SingleCompanyComponent), { ssr: false });
 
 export default SingleCompany;

@@ -7,14 +7,14 @@ import { useParams } from "next/navigation";
 const SingleCompany = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
+  const [isClient, setIsClient] = useState(false);
   const { singlecompany } = useSelector((state) => state.company);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (id) {
-      dispatch(getSingleCompany({ id })).finally(() => setLoading(false));
+      dispatch(getSingleCompany({ id }));
     }
-  }, [id, dispatch]);
+  }, [id]);
 
   function formatDate(dateString) {
     const options = { year: "numeric", month: "long", day: "numeric" };
@@ -22,18 +22,14 @@ const SingleCompany = () => {
     return date.toLocaleDateString("en-US", options);
   }
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!singlecompany) {
-    return <div>No company found</div>;
-  }
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
-    <section className="bg-white dark:bg-gray-900 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6" suppressHydrationWarning>
+    <section className="bg-white dark:bg-gray-900 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6" suppressHydrationWarning={true}>
       <div className="mx-auto max-w-screen-sm text-center lg:mb-16 mb-8">
-        <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Single Company Detail</h2>
+        <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">{isClient ? `Single Company Detail` : ""}</h2>
       </div>
       <div className="grid gap-8 lg:grid-cols-1">
         {singlecompany && (
@@ -46,7 +42,7 @@ const SingleCompany = () => {
                 Tutorial
               </span>
               <span className="text-sm" suppressHydrationWarning>
-                {formatDate(singlecompany.created_at)}
+                {isClient ? `${formatDate(singlecompany.created_at)}` : ""}
               </span>
             </div>
             <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{singlecompany.company_name}</h2>

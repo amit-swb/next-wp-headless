@@ -4,10 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllCompany } from "@/lib/slices/companySlice";
 import Link from "next/link";
 import { Field, Form, Formik } from "formik";
+import { selectCompanyData } from "@/lib/selector/selector";
 
 const AllCompany = () => {
   const dispatch = useDispatch();
-  const { allcompany } = useSelector((state) => state.company);
+  const companydata = useSelector(selectCompanyData);
+  const allcompany = companydata?.allcompany;
 
   const [filter, setFilter] = useState("");
 

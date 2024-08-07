@@ -16,11 +16,11 @@ const SingleCompany = () => {
     }
   }, [id]);
 
-  function formatDate(dateString) {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", options);
-  }
+  // function formatDate(dateString) {
+  //   const options = { year: "numeric", month: "long", day: "numeric" };
+  //   const date = new Date(dateString);
+  //   return date.toLocaleDateString("en-US", options);
+  // }
 
   useEffect(() => {
     setIsClient(true);
@@ -42,7 +42,7 @@ const SingleCompany = () => {
                 Tutorial
               </span>
               <span className="text-sm" suppressHydrationWarning>
-                {formatDate(singlecompany.created_at)}
+                {/* {formatDate(singlecompany.created_at)} */}
               </span>
             </div>
             <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{singlecompany.company_name}</h2>

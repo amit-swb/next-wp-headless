@@ -7,8 +7,7 @@ import { useParams } from "next/navigation";
 const SingleCompany = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
-  const [isClient, setIsClient] = useState(false);
-  const { singlecompany } = useSelector((state) => state.company);
+  // const { singlecompany } = useSelector((state) => state.company);
 
   useEffect(() => {
     if (id) {
@@ -21,10 +20,6 @@ const SingleCompany = () => {
   //   const date = new Date(dateString);
   //   return date.toLocaleDateString("en-US", options);
   // }
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   return (
     // <section className="bg-white dark:bg-gray-900 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6" suppressHydrationWarning={true}>
@@ -64,7 +59,7 @@ const SingleCompany = () => {
     //     )}
     //   </div>
     // </section>
-    <>this is single company</>
+    <></>
   );
 };
 

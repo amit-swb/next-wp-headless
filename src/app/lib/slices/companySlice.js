@@ -2,10 +2,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import companyAuthService from "../services/companyAuthService";
 
 // Get the company token from localStorage if it exists and parse it
-const company =
-  typeof window !== "undefined"
-    ? JSON.parse(localStorage.getItem("companyToken"))
-    : null;
+// const company =
+//   typeof window !== "undefined"
+//     ? JSON.parse(localStorage.getItem("companyToken"))
+//     : null;
 
 // Company Auth Registration
 export const CompanySignup = createAsyncThunk(

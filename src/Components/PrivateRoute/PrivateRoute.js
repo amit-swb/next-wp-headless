@@ -10,9 +10,9 @@ const PrivateRoute = ({ children }) => {
     // const employee = localStorage.getItem("employeeToken");
     // const hr = localStorage.getItem("employeeToken");
 
-    // if (!admin && !company) {
-    //   router.push("/");
-    // }
+    if (!admin && !company) {
+      router.push("/");
+    }
   }, [router]);
 
   return children;

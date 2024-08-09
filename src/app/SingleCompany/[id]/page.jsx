@@ -5,21 +5,17 @@ import { getSingleCompany } from "@/lib/slices/companySlice";
 import { useParams } from "next/navigation";
 
 const SingleCompany = () => {
-  const dispatch = useDispatch();
-  const { id } = useParams();
-  const { singlecompany } = useSelector((state) => state.company);
+  // const dispatch = useDispatch();
+  // const { id } = useParams();
+  // const { singlecompany } = useSelector((state) => state.company);
 
-  useEffect(() => {
-    if (id) {
-      dispatch(getSingleCompany({ id }));
-    }
-  }, [id]);
+  // useEffect(() => {
+  //   if (id) {
+  //     dispatch(getSingleCompany({ id }));
+  //   }
+  // }, [id]);
 
-  return (
-    <>
-      <div>dfsdf</div>
-    </>
-  );
+  return <></>;
 };
 
 export default SingleCompany;

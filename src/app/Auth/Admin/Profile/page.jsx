@@ -35,7 +35,8 @@ export default function AdminProfile() {
   }
 
   return (
-    <PrivateRoute>
+    // <PrivateRoute>
+    <>
       <div>
         <h3 className="text-right p-5 cursor-pointer" onClick={handleLogOut}>
           Logout
@@ -52,6 +53,7 @@ export default function AdminProfile() {
         )}
       </div>
       <ToastContainer />
-    </PrivateRoute>
+    </>
+    // </PrivateRoute>
   );
 }

@@ -168,7 +168,7 @@ export default function CompanyDashboard() {
   }, []);
 
   return (
-    <PrivateRoute>
+    // <PrivateRoute>
       <section className="company_dashboard_sec">
         <div>
           <h2 className="m-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{isClient ? `Hello ${companyName}!` : ""}</h2>
@@ -291,6 +291,6 @@ export default function CompanyDashboard() {
         )}
         <ToastContainer />
       </section>
-    </PrivateRoute>
+    // </PrivateRoute>
   );
 }

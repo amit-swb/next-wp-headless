@@ -1,5 +1,5 @@
-const SingleCompany = () => {
+const Company = () => {
   return <></>;
 };
 
-export default SingleCompany;
+export default Company;

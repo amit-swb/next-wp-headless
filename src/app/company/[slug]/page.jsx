@@ -7,8 +7,7 @@ import { useParams } from "next/navigation";
 const SingleCompany = () => {
   const [isClient, setIsClient] = useState(false);
   const dispatch = useDispatch();
-  const { id } = useParams;
-  console.log(id);
+  const params = useParams(); // Use useParams to get the slug
 
   const { singlecompany } = useSelector((state) => state.company);
 
@@ -17,16 +16,16 @@ const SingleCompany = () => {
   }, []);
 
   useEffect(() => {
-    if (id && isClient) {
-      dispatch(getSingleCompany({ id }));
+    if (params.slug && isClient) {
+      dispatch(getSingleCompany({ id: params.slug })); // Assuming id and slug are the same
     }
-  }, [id, isClient]);
+  }, [params.slug, isClient]);
 
-  if (!isClient) return null; // Avoid rendering until the client-side is ready
+  if (!isClient || !params.slug) return null; // Avoid rendering until client-side and slug are ready
 
   return (
     <section className="bg-white dark:bg-gray-900">
-      <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">{/* ... the rest of your rendering logic ... */}</div>
+      <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">{/* ... the rest of your rendering logic ... */}dfsdf</div>
     </section>
   );
 };

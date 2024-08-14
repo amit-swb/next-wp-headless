@@ -1,6 +1,3 @@
-"use client";
-import React from "react";
-
 const Company = () => {
   return (
     <section className="bg-white dark:bg-gray-900">

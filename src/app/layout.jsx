@@ -1,5 +1,4 @@
 import "../styles/globals.css";
-// import Header from "../Components/Header";
 import { ThemeProviders } from "./ThemeProvider/ThemeProviders";
 import PageTransitionWrapper from "../Components/PageTransitionWrapper";
 import { ReduxProvider } from "./lib/store/redux-provider";

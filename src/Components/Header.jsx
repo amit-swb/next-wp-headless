@@ -5,22 +5,14 @@ import { useEffect, useState } from "react";
 import { ThemeSwitcher } from "../app/ThemeProvider/ThemeSwitcher";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPages } from "@/lib/slices/postSlice";
 import { selectCompanyOrAdminData } from "@/lib/selector/selector";
 
 export default function Header() {
   const [showMenu, setShowMenu] = useState(false);
 
-  const { pages } = useSelector((state) => state.post);
-  const dispatch = useDispatch();
-
   const authdata = useSelector(selectCompanyOrAdminData);
   const auth = authdata?.company?.user || authdata?.admin?.data?.user;
   const authName = authdata?.company?.user?.company_name || authdata?.admin?.data?.user?.first_name;
-
-  useEffect(() => {
-    dispatch(fetchPages());
-  }, [dispatch]);
 
   useEffect(() => {}, [auth]);
 
@@ -36,15 +28,6 @@ export default function Header() {
             </div>
             <div className="hidden xl:block xl:w-4/5">
               <ul className="flex justify-end">
-                {pages?.map((c) => {
-                  return (
-                    <li className="mr-12" key={c.id}>
-                      <Link href="#" className="text-coolGray-500 hover:text-coolGray-900 font-medium">
-                        {c.title}
-                      </Link>
-                    </li>
-                  );
-                })}
                 {!auth && (
                   <>
                     <li className="mr-12">
@@ -94,15 +77,6 @@ export default function Header() {
                   <Image className="logo" src={logo} width={100} priority alt="brand logo" />
                 </Link>
                 <ul className="py-6">
-                  {pages?.map((c) => {
-                    return (
-                      <li className="mt-5" key={c.id}>
-                        <Link href="/Auth/Admin/Registration" className="text-coolGray-500 hover:text-coolGray-900 font-medium" onClick={() => setShowMenu(!showMenu)}>
-                          {c.title}
-                        </Link>
-                      </li>
-                    );
-                  })}
                   {!auth && (
                     <>
                       <li className="mt-5">

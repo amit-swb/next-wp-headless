@@ -7,12 +7,10 @@ const PrivateRoute = ({ children }) => {
   useEffect(() => {
     const admin = localStorage.getItem("admin");
     const company = localStorage.getItem("companyToken");
-    // const employee = localStorage.getItem("employeeToken");
-    // const hr = localStorage.getItem("employeeToken");
 
-    // if (!admin && !company) {
-    //   router.push("/");
-    // }
+    if (!admin && !company) {
+      router.push("/");
+    }
   }, [router]);
 
   return children;

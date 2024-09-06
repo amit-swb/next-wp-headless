@@ -229,10 +229,10 @@ export default function CompanyDashboard() {
                     <span className="text-sm">{formatDate(e?.date_of_joining)}</span>
                   </div>
                   <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                    <Link href={`/Auth/Company/Dashboard/Hr/${e._id}`}>{e?.first_Name + " " + e?.last_name}</Link>
+                    <Link href={{ pathname: "/Auth/Company/Dashboard/profile", query: { id: `${e._id}`, role: "Hr" } }}>{e?.first_Name + " " + e?.last_name}</Link>
                   </h2>
                   <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">Current Address: {e?.current_address}</p>
-                  <Link href={`/Auth/Company/Dashboard/Hr/${e._id}`}>
+                  <Link href={{ pathname: "/Auth/Company/Dashboard/profile", query: { id: `${e._id}`, role: "Hr" } }}>
                     <button className="inline-flex mr-2 items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                       Read More
                     </button>
@@ -267,10 +267,10 @@ export default function CompanyDashboard() {
                     <span className="text-sm">{formatDate(e?.date_of_joining)}</span>
                   </div>
                   <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                    <Link href={`/Auth/Company/Dashboard/Employee/${e._id}`}>{e?.first_Name + " " + e?.last_name}</Link>
+                    <Link href={{ pathname: "/Auth/Company/Dashboard/profile", query: { id: `${e._id}`, role: "Employee" } }}>{e?.first_Name + " " + e?.last_name}</Link>
                   </h2>
                   <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">Current Address: {e?.current_address}</p>
-                  <Link href={`/Auth/Company/Dashboard/Employee/${e._id}`}>
+                  <Link href={{ pathname: "/Auth/Company/Dashboard/profile", query: { id: `${e._id}`, role: "Employee" } }}>
                     <button className="inline-flex mr-2 items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                       Read More
                     </button>

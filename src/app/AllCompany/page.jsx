@@ -21,11 +21,11 @@ const AllCompany = () => {
     fetchAllCompany();
   }, [fetchAllCompany]);
 
-  // function formatDate(dateString) {
-  //   const options = { year: "numeric", month: "long", day: "numeric" };
-  //   const date = new Date(dateString);
-  //   return date.toLocaleDateString("en-US", options);
-  // }
+  function formatDate(dateString) {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", options);
+  }
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
@@ -61,12 +61,10 @@ const AllCompany = () => {
                     </svg>
                     Tutorial
                   </span>
-                  {/* <span className="text-sm">{formatDate(company.created_at)}</span> */}
+                  <span className="text-sm">{formatDate(company.created_at)}</span>
                 </div>
                 <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  <Link href={{ pathname: "/company", query: { id: `${company?._id}` } }}>
-                    {company.company_name}
-                  </Link>
+                  <Link href={{ pathname: "/company", query: { id: `${company?._id}` } }}>{company.company_name}</Link>
                 </h2>
                 <p className="mb-5 font-light text-gray-500 dark:text-gray-400">Email : {company.email_id}</p>
                 <div className="flex justify-between items-center">

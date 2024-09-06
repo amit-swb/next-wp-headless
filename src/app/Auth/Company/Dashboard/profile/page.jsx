@@ -2,7 +2,7 @@
 import { selectCompanyData, selectEmployeeData, selectHrData } from "@/lib/selector/selector";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { EmployeeUpdate, getEmployeesbyID } from "@/lib/slices/employeeSlice";
@@ -17,7 +17,9 @@ export default function EmployeeProfile() {
   const [successful, setSuccessful] = useState(false);
   const [file, setFile] = useState(null);
   const [image, setImage] = useState("");
-  const { id, role } = useParams();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+  const role = searchParams.get("role");
 
   const dispatch = useDispatch();
   const companydata = useSelector(selectCompanyData);

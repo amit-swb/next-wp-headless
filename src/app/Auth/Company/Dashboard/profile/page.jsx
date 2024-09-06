@@ -1,7 +1,7 @@
 "use client";
 import { selectCompanyData, selectEmployeeData, selectHrData } from "@/lib/selector/selector";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
@@ -13,7 +13,7 @@ import { getHrbyID, HrUpdate } from "@/lib/slices/hrSlice";
 
 var telRegEx = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
 
-export default function EmployeeProfile() {
+function ProfileScreen() {
   const [successful, setSuccessful] = useState(false);
   const [file, setFile] = useState(null);
   const [image, setImage] = useState("");
@@ -290,3 +290,13 @@ export default function EmployeeProfile() {
     </>
   );
 }
+
+const Profile = () => {
+  return (
+    <Suspense fallback={<p>Loading....</p>}>
+      <ProfileScreen suppressHydrationWarning={true} />
+    </Suspense>
+  );
+};
+
+export default Profile;

@@ -4,8 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast, { Toaster } from "react-hot-toast";
 import Link from "next/link";
 import { companyLogin } from "@/lib/slices/companySlice";
 import { selectCompanyError } from "@/lib/selector/selector";
@@ -124,7 +123,7 @@ const CompanyLoginScreen = () => {
           </div>
         </div>
       </div>
-      <ToastContainer />
+      <Toaster />
     </section>
   );
 };

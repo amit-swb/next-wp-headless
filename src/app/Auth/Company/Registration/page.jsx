@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
-import { ToastContainer, toast } from "react-toastify";
+import toast, { Toaster } from "react-hot-toast";
 import Link from "next/link";
 import { CompanySignup } from "@/lib/slices/companySlice";
 import { selectAdminData } from "@/lib/selector/selector";
@@ -133,7 +133,7 @@ const CompanyRegistration = () => {
           </div>
         </div>
       </div>
-      <ToastContainer />
+      <Toaster />
     </section>
   );
 };

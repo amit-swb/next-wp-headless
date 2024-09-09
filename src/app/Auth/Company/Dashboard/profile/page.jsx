@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { EmployeeUpdate, getEmployeesbyID } from "@/lib/slices/employeeSlice";
-import { toast, ToastContainer } from "react-toastify";
+import toast, { Toaster } from "react-hot-toast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { getHrbyID, HrUpdate } from "@/lib/slices/hrSlice";
@@ -285,7 +285,7 @@ function ProfileScreen() {
             </Formik>
           </div>
         </div>
-        <ToastContainer />
+        <Toaster />
       </section>
     </>
   );

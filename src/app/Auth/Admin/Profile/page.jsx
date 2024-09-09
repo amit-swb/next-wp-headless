@@ -5,7 +5,7 @@ import PrivateRoute from "../../../../Components/PrivateRoute/PrivateRoute";
 import { selectAdminData } from "@/lib/selector/selector";
 import { useDispatch, useSelector } from "react-redux";
 import { setLogout } from "@/lib/slices/adminSlice";
-import { ToastContainer, toast } from "react-toastify";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function AdminProfile() {
   const dispatch = useDispatch();
@@ -51,7 +51,7 @@ export default function AdminProfile() {
           </>
         )}
       </div>
-      <ToastContainer />
+      <Toaster />
     </PrivateRoute>
   );
 }

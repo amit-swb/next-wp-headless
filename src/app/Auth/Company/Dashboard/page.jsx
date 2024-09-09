@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { ToastContainer, toast } from "react-toastify";
+import toast, { Toaster } from "react-hot-toast";
 import { EmployeeDelete, EmployeeSignup, getEmployeesbyID } from "@/lib/slices/employeeSlice";
 import { selectCompanyData, selectEmployeeData, selectHrData } from "@/lib/selector/selector";
 import PrivateRoute from "../../../../Components/PrivateRoute/PrivateRoute";
@@ -289,7 +289,7 @@ export default function CompanyDashboard() {
             </div>
           </div>
         )}
-        <ToastContainer />
+        <Toaster />
       </section>
     </PrivateRoute>
   );

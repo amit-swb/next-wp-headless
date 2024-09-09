@@ -6,7 +6,7 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ToastContainer, toast } from "react-toastify";
+import toast, { Toaster } from "react-hot-toast";
 import * as Yup from "yup";
 import PrivateRoute from "../../../../Components/PrivateRoute/PrivateRoute";
 import { selectCompanyData } from "@/lib/selector/selector";
@@ -201,7 +201,7 @@ export default function SingleDetails() {
             </div>
           </div>
         </div>
-        <ToastContainer />
+        <Toaster />
       </section>
     </PrivateRoute>
   );

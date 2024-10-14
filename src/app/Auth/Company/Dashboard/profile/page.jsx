@@ -10,10 +10,12 @@ import toast, { Toaster } from "react-hot-toast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { getHrbyID, HrUpdate } from "@/lib/slices/hrSlice";
+import { useRouter } from "next/navigation";
 
 var telRegEx = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
 
 function ProfileScreen() {
+  const router = useRouter();
   const [successful, setSuccessful] = useState(false);
   const [file, setFile] = useState(null);
   const [image, setImage] = useState("");
@@ -209,6 +211,7 @@ function ProfileScreen() {
       }
       setSuccessful(true);
       toast.success(`${role.charAt(0).toUpperCase() + role.slice(1)} updated successfully`);
+      setTimeout(() => router.push("/Auth/Company/Dashboard"), 1000);
     } catch (error) {
       setSuccessful(false);
       toast.error(`${role.charAt(0).toUpperCase() + role.slice(1)} update failed`);
